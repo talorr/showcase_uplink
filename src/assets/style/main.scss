@@ -1,0 +1,60 @@
+@font-face {
+  font-family: 'Rubik';
+  src: url('../fonts/Rubik-Regular.woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  src: url('../fonts/Rubik-Medium.woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Rubik', sans-serif;
+  line-height: 1.2;
+}
+
+body hr {
+  opacity: 0.3;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 0;
+  width: 1250px;
+  @media (max-width: 1300px) {
+    width: 100%;
+    padding: 0 40px;
+  }
+  @media (max-width: 550px) {
+    padding: 0 20px;
+  }
+}
+
+.block-height {
+  min-height: calc(100dvh - 258px);
+}
+
+.btn{
+  cursor: pointer;
+}
+
+
+@import "header";
+@import "cart";
+@import "order";
+@import "products";
+@import "pagination";
+@import "info";
+@import "footer";
+@import "modal-product-card";
+@import "modal-goto-card";
+@import "banner_footer";
+@import "error-page";
+
