@@ -10,6 +10,10 @@
 </template>
 
 <script setup>
+import { useMeta } from "vue-meta";
+useMeta({
+  title: "Доставка",
+})
 import { ref, onMounted } from 'vue';
 import MainHeader from "../components/MainHeader.vue";
 import Footer from "@/components/Footer.vue";

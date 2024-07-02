@@ -5,11 +5,11 @@
         @click="showModal(product)"
         @close="closeModal"
     >
-      <img :src="imgUrl" :alt="product.name" :title="product.name" itemprop="image">
+      <Image :src="imgUrl" :alt="product.name" :title="product.name" itemprop="image"/>
     </div>
     <div class="product-item-price-row">
-      <p class="product-item-price">{{ product.price }} ₽</p>
-      <p v-if="product.old_price" class="product-item-old-price">{{ product.old_price }} ₽</p>
+      <p class="product-item-price">{{ getFormattedProductPrice(product.price) }} ₽</p>
+      <p v-if="product.old_price" class="product-item-old-price">{{ getFormattedProductPrice(product.old_price) }} ₽</p>
       <template v-if="product.discount > 0">
         <div v-if="product.is_discount_number > 0" class="product-item-discount">{{ product.discount }}₽</div>
         <div v-else class="product-item-discount">{{ product.discount }}%</div>
@@ -49,11 +49,17 @@ import IconCart from "@/components/icons/IconCart.vue";
 import {useModal} from 'vue-final-modal';
 import ProductModal from "@/components/ProductModal.vue";
 import {useCartInfo} from "@/stores/cartInfo";
+import Image from "@/components/Image.vue";
 
 const cartInfo = useCartInfo();
 const { proxy } = getCurrentInstance();
 const $mainSite = proxy.$mainSite;
 const $store = proxy.$store;
+
+
+const getFormattedProductPrice = (price) => {
+  return new Intl.NumberFormat('ru-RU').format(price)
+}
 
 const props = defineProps({
   product: {
@@ -94,7 +100,14 @@ function removeToCart() {
 }
 
 const { product } = toRefs(props);
-const imgUrl = computed(() => $mainSite + product.value.images[0].url);
+const imgUrl = computed(() => {
+  if (!product.value?.images && !product.value?.images?.length) {
+    return ''
+  }
+
+  return $mainSite + product.value?.images[0]?.url 
+
+});
 
 const countProduct = computed(() => {
   let existingProduct = $store.cartInfo.cart.find(item => item.id === props.product.id);

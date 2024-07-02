@@ -3,7 +3,7 @@
     <div class="container">
 
       <RouterLink to="/">
-        <img class="logo" :src="siteLogo" alt="logo">
+        <img class="logo" :src="`${siteLogo}`" alt="logo">
       </RouterLink>
 
       <div class="cart">
@@ -41,7 +41,6 @@ import { getCurrentInstance, computed } from 'vue';
 const { proxy } = getCurrentInstance();
 const $store = proxy.$store;
 const $mainSite = proxy.$mainSite;
-
 const siteLogo = computed(() => $mainSite + $store.siteInfo.siteInfo.logo);
 const showCart = computed(() => $store.cartInfo.cart.length > 0);
 
@@ -58,7 +57,8 @@ const priceProduct = computed(() => {
   $store.cartInfo.cart.forEach((product) => {
     price += product.quantity * product.price
   })
-  return price
+  
+  return new Intl.NumberFormat('ru-RU').format(price)
 });
 
 </script>

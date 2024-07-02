@@ -43,3 +43,10 @@ footer{
   gap: 15px;
   flex-direction: column;
 }
+
+@media (max-width: 1024px) {
+
+  footer .footer__banner-text{
+      font-size: 16px;
+  }
+}

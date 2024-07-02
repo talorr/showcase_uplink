@@ -21,7 +21,7 @@
             <div class="cart-product-row">
               <div class="cart-product-info">
                 <div>
-                  <img
+                  <Image
                       v-if="product.image"
                       :src="getImgUrl(product.image)"
                       class="cart-product-img"
@@ -29,7 +29,7 @@
                       :title="product.name"
                   />
 
-                  <img
+                  <Image
                       v-else
                       src="../assets/images/NoItemFound.png"
                       class="cart-product-img"
@@ -59,8 +59,8 @@
               </span>
 
                 <div class="cart-product-price ms-price">
-                  <span v-if="product.old_price" class="old-price text-nowrap">{{ product.old_price }} ₽</span>
-                  <span class="new-price text-nowrap">{{ product.price }} ₽</span>
+                  <span v-if="product.old_price" class="old-price text-nowrap">{{ getFormattedProductPrice(product.old_price) }} ₽</span>
+                  <span class="new-price text-nowrap">{{ getFormattedProductPrice(product.price) }} ₽</span>
                 </div>
               </div>
             </div>
@@ -102,6 +102,13 @@
                     <span>₽</span>
                   </div>
                 </div>
+                <div class="total-discount">
+                  <div class="total-discount-plain">{{ discountPercent }} %</div>
+                  <div class="total-discount-summ">
+                      <span class="ms2_total_discount">{{ discountCost }}</span>
+                      <span> ₽</span>
+                  </div>
+                </div>
                 <router-link to="/checkout" class="make-order make-order-click">
                   Оформить
                 </router-link>
@@ -117,6 +124,11 @@
 </template>
 
 <script setup>
+import Image from "@/components/Image.vue";
+import { useMeta } from "vue-meta";
+useMeta({
+  title: "Корзина",
+})
 import {ref, reactive, onMounted, watch, computed, getCurrentInstance} from 'vue';
 import HeaderCart from "@/components/HeaderCart.vue";
 import Footer from "@/components/Footer.vue";
@@ -127,7 +139,9 @@ const cartInfo = useCartInfo();
 // const $store = proxy.$store;
 const $mainSite = proxy.$mainSite;
 
-
+const getFormattedProductPrice = (price) => {
+  return new Intl.NumberFormat('ru-RU').format(price)
+}
 
 const products = computed(() => {
   return cartInfo.cart
@@ -141,16 +155,37 @@ const countProduct = computed(() => {
   return count
 });
 
+const discountPercent = computed(() => {
+  let discount = 0;
+  cartInfo.cart.forEach((product) => {
+    if(product.old_price < product.price){
+      return
+    }
+    discount += (product.old_price - product.price) / product.old_price * 100
+  })
+  return Math.round(discount)
+})
+const discountCost = computed(() => {
+  let discount = 0;
+  cartInfo.cart.forEach((product) => {
+    if(product.old_price < product.price){
+      return
+    }
+    discount +=  (product.quantity *(product.old_price - product.price))  
+  })
+  return discount
+})
 const priceProduct = computed(() => {
   let price = null;
   cartInfo.cart.forEach((product) => {
     price += product.quantity * product.price
   })
-  return price
+  return new Intl.NumberFormat('ru-RU').format(price)
 });
 
 
 function getImgUrl(url){
+  if(!url) return ''
   return $mainSite + url
 }
 

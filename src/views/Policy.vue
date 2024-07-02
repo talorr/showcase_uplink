@@ -10,6 +10,10 @@
 </template>
 
 <script setup>
+import { useMeta } from "vue-meta";
+useMeta({
+  title: "Политика конфиденциальности",
+})
 import { ref, onMounted } from 'vue';
 import MainHeader from "../components/MainHeader.vue";
 import Footer from "@/components/Footer.vue";
@@ -21,7 +25,6 @@ const init = async () => {
   let response = await apiClient.get('/showcase-params');
   data.value = response.data.settings.policy;
 };
-
 onMounted(() => {
   init();
 });

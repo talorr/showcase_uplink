@@ -8,9 +8,36 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
+  build: {
+    target: "ES2022",
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        entryFileNames: `[name]` + `.js`,
+        chunkFileNames: `[name]` + `.js`,
+        assetFileNames: `[name]` + `.[ext]`,
+        manualChunks(id) {
+            if (id.includes('node_modules')) {
+              return id.toString().split('node_modules/')[1].split('/')[0].toString();
+            }
+            if(id.includes('.scss')) {
+              'styles'
+            }
+            if (id.includes('src/views') && id.includes('vue')) {
+              const componentPath = id.toString().split('src/views')[1];
+              const pathSegments = componentPath.split('/');
+              if(pathSegments.length === 3) {
+                return pathSegments[1];
+              } 
+            }
+        }
+      }
+    },
+  },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@assets-images': fileURLToPath(new URL('./src/assets/images', import.meta.url)),
     }
   }
 })

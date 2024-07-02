@@ -63,6 +63,9 @@
           aspect-ratio: 1;
           object-fit: cover;
           border-radius: 5px;
+          @media (max-width: 550px) {
+            width: 100dvw;
+          }
         }
       }
     }
@@ -165,7 +168,9 @@
       align-items: center;
       justify-content: space-between;
       height: 36px;
-
+      @media (max-width: 550px) {
+        gap: 24px;
+      }
       div {
         height: inherit;
       }
@@ -207,6 +212,12 @@
   }
 
   &__info-tocart {
+    @media (max-width: 550px) {
+      min-width: 10px;
+      width: unset;
+      max-width: none;
+      flex-grow: 1;
+    }
     width: 100%;
     max-width: 220px;
     height: 36px;

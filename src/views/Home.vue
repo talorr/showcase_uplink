@@ -1,5 +1,6 @@
 <template>
-  <div>
+
+  <div class="main-block">
     <MainHeader/>
 
     <main class="products container">
@@ -50,19 +51,23 @@
           </li>
         </ul>
       </div>
+      <BottomCartMobile/>
     </main>
-
     <Footer/>
   </div>
 </template>
 
 <script setup>
+import { useMeta } from "vue-meta";
+useMeta({
+  title: "Цветочная онлайн-витрина",
+})
 import { ref, reactive, onMounted, watch } from 'vue';
 import MainHeader from "@/components/MainHeader.vue";
 import ProductItem from "@/components/ProductItem.vue";
 import Footer from "@/components/Footer.vue";
 import apiClient from "@/axios.js";
-
+import BottomCartMobile from "@/components/BottomCartMobile.vue";
 
 const sortsList = ref([
   {
@@ -90,11 +95,6 @@ const sortsList = ref([
     sortby: "product.price",
     dir: "desc"
   },
-  {
-    name: "По наличию",
-    sortby: "product.not_available",
-    dir: "asc"
-  }
 ]);
 let products = ref([]);
 let currentPage = ref(1);

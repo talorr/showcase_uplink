@@ -4,7 +4,15 @@
       class="product-card-overlay"
       content-class="product-card-overlay__content"
   >
-
+    <div class="product-card-overlay__header">
+              <div @click="close()" class="go-back" href='/'>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M15 6L9 12L15 18" stroke="#B9B9B9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Вернуться на главную
+              </div>
+      </div>
+      
     <div class="product-card-overlay__wrap">
       <swiper
         class="mainSwiper"
@@ -31,26 +39,28 @@
             :key="image_key"
             class="swiper-slide"
         >
-          <img :src="srcImage(image.url)" :alt="product.name + image.rank">
+          <Image :src="srcImage(image.url)" :alt="product.name + image.rank"/>
         </swiper-slide>
       </swiper>
 
       <div class="swiper-pagination product-pagination"></div>
-
-      <swiper
-          @swiper="setThumbsSwiper"
-          :spaceBetween="10"
-          :modules="[Navigation, Pagination, Thumbs]"
-          class="thumbSwiper"
-      >
-        <swiper-slide
-            v-for="(image, image_key) in product.images"
-            :key="image_key"
-            class="swiper-slide"
+      <template v-if="product?.images?.length > 1">
+        <swiper
+            @swiper="setThumbsSwiper"
+            :spaceBetween="10"
+            :modules="[Navigation, Pagination, Thumbs]"
+            class="thumbSwiper"
         >
-          <img :src="srcImage(image.url)" :alt="product.name + image.rank">
-        </swiper-slide>
-      </swiper>
+          <swiper-slide
+              v-for="(image, image_key) in product.images"
+              :key="image_key"
+              class="swiper-slide"
+          >
+            <Image :src="srcImage(image.url)" :alt="product.name + image.rank"/>
+          </swiper-slide>
+        </swiper>
+      </template>
+
     </div>
 
     <div class="product-card__info-container">
@@ -76,7 +86,7 @@
         </span>
       </div>
       <hr>
-      <div class="product-card__info-contains">
+      <div v-if="product?.composition?.length > 0" class="product-card__info-contains">
         Состав:
         <div>
           <p v-for="(composition, composition_key) in product.composition" :key="composition_key">
@@ -92,11 +102,12 @@
 </template>
 
 <script setup>
-import {getCurrentInstance, toRefs, ref, defineEmits} from 'vue';
+import {getCurrentInstance, toRefs, ref} from 'vue';
 import {useModal, VueFinalModal} from 'vue-final-modal'
 
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/swiper-bundle.css';
+import Image from "@/components/Image.vue";
 import { Autoplay, Navigation, Pagination, Thumbs } from 'swiper/modules';
 import AddItemInCart from "@/components/AddItemInCart.vue";
 import {useCartInfo} from "@/stores/cartInfo";
@@ -114,6 +125,7 @@ const { proxy } = getCurrentInstance();
 const { product } = toRefs(props);
 
 function srcImage(url){
+  if(!url) return ''
   return proxy.$mainSite + url
 }
 

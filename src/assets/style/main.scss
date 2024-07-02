@@ -17,16 +17,22 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Rubik', sans-serif;
-  line-height: 1.2;
+  // line-height: 1.2;
 }
 
 body hr {
   opacity: 0.3;
 }
-
+.main-block { 
+  width: calc(100vw - 17px);
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
+}
 .container {
   margin: 0 auto;
   padding: 0;
+  position: relative;
   width: 1250px;
   @media (max-width: 1300px) {
     width: 100%;
@@ -46,6 +52,15 @@ body hr {
 }
 
 
+
+
+
+
+
+
+
+
+
 @import "header";
 @import "cart";
 @import "order";
@@ -57,4 +72,5 @@ body hr {
 @import "modal-goto-card";
 @import "banner_footer";
 @import "error-page";
+@import "media";
 

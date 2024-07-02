@@ -10,13 +10,13 @@ import router from './router'
 import 'vue-final-modal/style.css'
 import "./assets/style/main.scss";
 import '@vuepic/vue-datepicker/dist/main.css'
-
-
+import { createMetaManager } from 'vue-meta'
 const app = createApp(App);
 
 const pinia = createPinia();
 const vfm = createVfm()
 
+app.use(createMetaManager()) 
 app.use(pinia);
 app.use(router)
 app.use(vfm)

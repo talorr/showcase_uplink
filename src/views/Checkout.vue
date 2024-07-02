@@ -1,17 +1,15 @@
 <template>
   <div>
-    <HeaderCart/>
+    <HeaderCheckout/>
 
     <div class="header-margin container cart-block">
-      <div class="order-input">
-
-
+      <div v-if="!orderCreated" class="order-input">
         <div>
           <h4 class="order-input__row-title">Укажите Ваши контактные данные:</h4>
           <div class="order-input__row">
             <div class="order-input__container">
               <div v-for="(info, info_key) in order.user" :key="info_key" class="form-group row input-parent">
-                <input type="text" :placeholder="titles[info_key]" :name="info_key" v-model="order.user[info_key]"  required>
+                <input type="text" :class="{'error': !validateClientInfo?.obj[info_key]}" :placeholder="titles[info_key]" :name="info_key" v-model="order.user[info_key]" required>
               </div>
               <div class="form-group"></div>
             </div>
@@ -35,15 +33,15 @@
 
           <div class="order-input__row">
             <h4 class=order-input__row-title>Укажите адрес доставки</h4>
-            <!--            <span class="validation-text [[+errors.deliverytype]]" name="deliverytype">Необходимо выбрать способ доставки!</span>-->
-            <!--            <span class="validation-text [[+errors.deliveryadress]]" name="deliveryadress">Нужно выбрать район </span>-->
+            <span class="validation-text" v-if="!order.courier_delivery && !order.pickup" name="deliverytype">Необходимо выбрать способ доставки!</span>
+            
             <div class="order-input__container">
               <div v-if="!order.courier_delivery" class="card-checkbox card-checkbox-pickup">
-                <input type="checkbox" v-model="order.pickup" name="pickup" :value="1" @change="deliveryPrice($event)">
+                <input type="checkbox" v-model="order.pickup" id="delivery_type-pickup" :value="1" @change="deliveryPrice($event)">
                 <label for="delivery_type-pickup">Самовывоз</label>
               </div>
               <div v-if="!order.pickup" class="card-checkbox card-checkbox-courier">
-                <input type="checkbox" name="courier_delivery" v-model="order.courier_delivery" :checked="order.courier_delivery">
+                <input type="checkbox" id="delivery_type-courier" v-model="order.courier_delivery" :checked="order.courier_delivery">
                 <label for="delivery_type-courier">Доставка курьером</label>
               </div>
 
@@ -53,14 +51,14 @@
                     v-for="(delivery, delivery_key) in deliveriesList"
                     :key="delivery_key"
                 >
-                  <input type="radio" name="delivery" :value="delivery.id" v-model="order.delivery" @change="deliveryPrice($event)">
-                  <label for="delivery">{{ delivery.name }}</label>
+                  <input type="radio" :id="`delivery-${delivery.id}`" :value="delivery.id" v-model="order.delivery" @change="deliveryPrice($event)">
+                  <label :for="`delivery-${delivery.id}`">{{ delivery.name }}</label>
                 </div>
               </div>
 
               <div class="block-courier" v-if="order.courier_delivery">
                 <div class="card-checkbox">
-                  <input name="checkout_reciever_address" type="checkbox" v-model="order.checkout_reciever_address">
+                  <input id="checkout_reciever_address" type="checkbox" v-model="order.checkout_reciever_address">
                   <label for="checkout_reciever_address">Уточнить адрес у получателя</label>
                 </div>
 
@@ -77,12 +75,14 @@
                       v-for="(address, address_key) in order.address"
                       :key="address_key"
                       class="form-group row input-parent group-address"
+                
                       v-show="!order.checkout_reciever_address"
                   >
                     <input
                         type="text"
                         :placeholder="titles[address_key]"
                         :name="address_key"
+                        :class="{ 'error': validateOrderDeliveryInfo.obj[address_key] == false }"
                         v-model="order.address[address_key]"
                         class="form-control">
                   </div>
@@ -104,7 +104,7 @@
           <div class="order-input__row order-input__date">
             <div class="order-input__container">
               <div class="card-checkbox">
-                <input name="checkout_delivery_date" type="checkbox" v-model="order.checkout_delivery_date">
+                <input id="checkout_delivery_date" type="checkbox" v-model="order.checkout_delivery_date">
                 <label for="checkout_delivery_date">Уточнить у получателя</label>
               </div>
 
@@ -113,8 +113,10 @@
                   class="form-group row input-parent date-main"
               >
                 <VueDatePicker
+                    placeholder="Дата доставки*"
                     v-model="order.delivery_date"
                     locale="ru-RU"
+                    format="dd.MM.yyyy"
                     :enable-time-picker="false"
                     :min-date="new Date()"
                     :format="formatDate"
@@ -147,13 +149,13 @@
           <div class="order-input__row">
             <div class="order-input__container">
               <div class="card-checkbox">
-                <input name="checkout_anonymous" type="checkbox" v-model="order.checkout_anonymous">
+                <input id="checkout_anonymous" type="checkbox" v-model="order.checkout_anonymous">
                 <label for="checkout_anonymous">Отправить анонимно</label>
               </div>
 
               <div></div>
               <div class="card-checkbox">
-                <input name="checkout_make_photo" type="checkbox" v-model="order.checkout_make_photo">
+                <input id="checkout_make_photo" type="checkbox" v-model="order.checkout_make_photo">
                 <label for="checkout_make_photo">Сделать фото с получателем</label>
               </div>
             </div>
@@ -169,7 +171,7 @@
               >
                 <label class="col-form-label payment">
                   <input type="radio" name="payment" v-model="order.payment" :value="payment.id">
-                  <img :src="$mainSite + payment.logo" :alt="payment.name" :title="payment.name" class="mw-100"/>
+                  <Image :src="$mainSite + payment.logo" :alt="payment.name" :title="payment.name" class="mw-100"/>
                   <span>{{ payment.name }}</span>
                 </label>
               </div>
@@ -185,7 +187,7 @@
               <div class="total_count-case">
                 <div>Товаров ({{ countProducts }})</div>
                 <div>
-                  <span class="ms2_order_cart_cost">{{ order.cart_cost }}</span> ₽
+                  <span class="ms2_order_cart_cost">{{ order?.cart_cost ? cartCost : 0 }}</span> ₽
                 </div>
               </div>
               <div class="total_count-case">
@@ -197,7 +199,7 @@
               <div class="total_count-case">
                 <div>Скидка</div>
                 <div>
-                  <span class="">{{ order.discount_cost }}</span> ₽
+                  <span class="">{{ order?.discount_cost ? order.discount_cost : 0 }}</span> ₽
                 </div>
               </div>
             </div>
@@ -207,11 +209,11 @@
                 <div class="total-cost">
                   <p>Итого</p>
                   <div>
-                    <span class="ms2_order_cost ms2_total_summ">{{ order.cost }}</span>
+                    <span class="ms2_order_cost ms2_total_summ">{{ order?.cost ? orderCost : 0 }}</span>
                     <span> ₽</span>
                   </div>
                 </div>
-                <span class="make-order" @click="makeOrder()"> Заказать </span>
+                <button :disabled="disableOrderButton" class="make-order" @click="makeOrder()"> Заказать </button>
               </div>
             </div>
             <div class="total-policy">
@@ -223,8 +225,51 @@
           </div>
         </div>
       </div>
-    </div>
 
+      <div v-else  class="container success">
+        <div class="success-title">Заказ #2407/1 успешно оформлен</div>
+        <div class="success-header">Информация о заказе</div>
+          
+        <div class="success-cont">
+          {{ order.products }}
+          <div class="success-case">  
+            <img src="" alt="Сборный букет «Синева»" title="Сборный букет «Синева»">
+            <div class="success-desc">
+                <span>Сборный букет «Синева»</span>
+                <span> Цена: 3 600 ₽ </span>
+                <span> Количество: 2 шт.</span>
+            </div>
+          </div>                 
+          <div class="success-case">  
+            <img src="" alt="Букет с герберами «Веснушки»" title="Букет с герберами «Веснушки»">
+            <div class="success-desc">
+                <span>Букет с герберами «Веснушки»</span>
+                <span> Цена: 2 300 ₽ <span style="text-decoration: lin">2 530руб</span></span>
+                <span> Количество: 1 шт.</span>
+            </div>
+          </div>                 
+        </div>
+            
+        <div class="success-header">Информация о доставке</div>
+        <p>Способ доставки: <span>Балтийская 120</span></p>
+        <p>Способ оплаты: <span>Онлайн-оплата</span></p>
+        <p>Имя получателя: <span>fds</span></p>
+        <p>Телефон получателя: <span>fds</span></p>    
+        <p>Дата доставки: <span style="color: #333">01.07.2024</span></p>
+        <p>Время доставки: <span style="color: #333">17:00-19:00</span></p>
+            <br>
+        <div class="success-header">Контактные данные заказчика</div>
+        <p>Имя заказчика: <span>Авфавфа</span></p>
+        <p>Телефон заказчика: <span>89278428729</span></p>
+        <p>Почта заказчика: <span>test1@test.com</span></p>
+        <br>
+        
+        <div class="success-header">ИТОГО: </div>
+          Сумма товаров: 9 500 ₽ <br>
+          Итого: <strong>9 500</strong> ₽                
+        <a href="/" class="success-href">Вернуться на главную</a>
+      </div>
+    </div>
     <Footer/>
   </div>
 
@@ -232,8 +277,13 @@
 </template>
 
 <script setup>
-import {ref, reactive, onMounted, watch, computed, getCurrentInstance} from 'vue';
-import HeaderCart from "@/components/HeaderCart.vue";
+import Image from "@/components/Image.vue";
+import { useMeta } from "vue-meta";
+useMeta({
+  title: "Оформление заказа",
+})
+import {ref, reactive, onMounted, watch, computed, getCurrentInstance,watchEffect} from 'vue';
+import HeaderCheckout from "@/components/HeaderCheckout.vue";
 import Footer from "@/components/Footer.vue";
 const { proxy } = getCurrentInstance();
 import {useCartInfo} from "@/stores/cartInfo";
@@ -244,15 +294,21 @@ import '@vuepic/vue-datepicker/dist/main.css'
 const cartInfo = useCartInfo();
 const $mainSite = proxy.$mainSite;
 
+const disableOrderButton = computed(() => {
+  if(!order.courier_delivery && !order.pickup) return true
+  if(order.courier_delivery && validateOrderDeliveryInfo.value.errorsCount > 0) return true
+  if(validateClientInfo.value.errorsCount > 0) return true
+})
+
 const titles = {
   fullname: "Ваше Имя*",
   mobilephone: "Ваш телефон*",
   email: "E-mail*",
+  street: "Улица",
   building: "Дом",
   entrance: "Подъезд",
   floor: "Этаж",
   room: "Квартира",
-  street: "Улица",
 }
 
 const order =  reactive({
@@ -268,11 +324,13 @@ const order =  reactive({
   comment: "",
 
   address: {
+    street: "",// улица,
+    
     building: "", // дом
     entrance: "", // подъезд
     floor: "", // этаж
     room: "", // квартира
-    street: "",// улица,
+
   },
 
   user: { // контактные данные
@@ -297,6 +355,37 @@ const order =  reactive({
 let deliveryIntervals = ref([]);
 let deliveriesList = ref([]);
 let paymentsList = ref([]);
+const validateOrderDeliveryInfo = computed(() => {
+  let obj = {
+    building: true,
+    room: true,
+    street: true
+  }
+  let errorsCount = 0
+  Object.entries(order.address).map(([key, item]) => {
+    if (item.length === 0 && !!obj[key]) {
+      obj[key] = false;
+      errorsCount++;
+    }
+  })
+  return {obj,errorsCount}
+})
+const validateClientInfo = computed(() => {
+  let obj = {
+    fullname: true,
+    mobilephone: true,
+    email: true  
+  }
+  let errorsCount = 0
+  Object.entries(order.user).map(([key, item]) => {
+    if (item.length === 0) {
+      obj[key] = false;
+      errorsCount++;
+    }
+
+  })
+  return {obj,errorsCount}
+})
 
 const payments = computed(() => {
   order.payment = 0
@@ -305,7 +394,7 @@ const payments = computed(() => {
     if (item.id === order.delivery) return item
   })
 
-  return paymentsList.value.filter((payment) => {
+  return paymentsList.value?.filter((payment) => {
     if (delivery.payments.indexOf(payment.id) > -1) return payment
   })
 });
@@ -317,7 +406,6 @@ const intervals = computed(() => {
 
   let selectDate = new Date(order.delivery_date)
   selectDate = new Date(selectDate.getFullYear(), selectDate.getMonth(), selectDate.getDate())
-
   if (Number(today) === Number(selectDate)){
 
     let realClock = new Date().getHours();
@@ -339,6 +427,7 @@ const intervals = computed(() => {
       return {value: elem}
     })
   }
+
 })
 
 const countProducts = computed(() => {
@@ -393,8 +482,13 @@ function init() {
   order.products = cartInfo.cart
   order.cart_cost = priceProducts
   order.discount_cost = discountProducts
+  order.delivery_date = new Date()
+
 }
 
+const initDeliverytime = (interval) => {
+  order.delivery_time = interval?.value
+}
 function deliveryPrice(event){
   if (order.pickup){
     order.delivery_cost = 0
@@ -405,9 +499,17 @@ function deliveryPrice(event){
     order.delivery_cost = Number(delivery.price)
   }
 }
-
+const cartCost = computed(() => {
+  const intl = new Intl.NumberFormat('ru-RU');
+  return intl.format(order.cart_cost)
+})
+const orderCost = computed(() => {
+  const intl = new Intl.NumberFormat('ru-RU');
+  return intl.format(order.cost)
+})
+const orderCreated = ref(false)
 async function makeOrder(){
-  let responseMakeOrder = await apiClient.post('/make-order', order);
+  let responseMakeOrder = await apiClient.post('/create-order', order);
   console.log(responseMakeOrder)
 }
 
@@ -421,6 +523,14 @@ const formatDate = (date) => {
 
 onMounted(() => {
   init();
+  
+  watchEffect(() => {
+    let intervalInit = intervals.value?.find(interval => !interval?.disabled)
+    initDeliverytime(intervalInit)
+    let paymentInit = payments.value[0]
+    if(!!paymentInit) order.payment = paymentInit.id
+
+  })
 });
 
 watch(() => order, () => {

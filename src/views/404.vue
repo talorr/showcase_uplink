@@ -16,6 +16,10 @@
 </template>
 
 <script setup>
+import { useMeta } from "vue-meta";
+useMeta({
+  title: "Страница не найдена",
+})
 import MainHeader from "@/components/MainHeader.vue";
 import Footer from "@/components/Footer.vue";
 

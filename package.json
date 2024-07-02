@@ -19,6 +19,7 @@
     "swiper": "^11.1.4",
     "vue": "^3.4.21",
     "vue-final-modal": "^4.5.4",
+    "vue-meta": "^3.0.0-alpha.10",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
