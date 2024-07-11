@@ -140,7 +140,7 @@ const cartInfo = useCartInfo();
 const $mainSite = proxy.$mainSite;
 
 const getFormattedProductPrice = (price) => {
-  return new Intl.NumberFormat('ru-RU').format(price)
+  return new Intl.NumberFormat('ru-RU').format(Number(price))
 }
 
 const products = computed(() => {
@@ -148,9 +148,9 @@ const products = computed(() => {
 });
 
 const countProduct = computed(() => {
-  let count = null;
+  let count = 0;
   cartInfo.cart.forEach((product) => {
-    count += product.quantity
+    count += Number(product.quantity)
   })
   return count
 });
@@ -176,7 +176,7 @@ const discountCost = computed(() => {
   return discount
 })
 const priceProduct = computed(() => {
-  let price = null;
+  let price = 0;
   cartInfo.cart.forEach((product) => {
     price += product.quantity * product.price
   })

@@ -431,7 +431,7 @@ const intervals = computed(() => {
 })
 
 const countProducts = computed(() => {
-  let count = null;
+  let count = 0;
   cartInfo.cart.forEach((product) => {
     count += product.quantity
   })
@@ -439,7 +439,7 @@ const countProducts = computed(() => {
 });
 
 const priceProducts = computed(() => {
-  let price = null;
+  let price = 0;
   cartInfo.cart.forEach((product) => {
     price += product.quantity * product.price
   })
@@ -447,7 +447,7 @@ const priceProducts = computed(() => {
 });
 
 const discountProducts = computed(() => {
-  let discount = null;
+  let discount = 0;
   cartInfo.cart.forEach((product) => {
     if (product.old_price){
       discount += product.old_price - product.price
@@ -501,16 +501,71 @@ function deliveryPrice(event){
 }
 const cartCost = computed(() => {
   const intl = new Intl.NumberFormat('ru-RU');
-  return intl.format(order.cart_cost)
+  return intl.format(Number(order.cart_cost))
 })
 const orderCost = computed(() => {
   const intl = new Intl.NumberFormat('ru-RU');
-  return intl.format(order.cost)
+  return intl.format(Number(order.cost))
 })
 const orderCreated = ref(false)
 async function makeOrder(){
-  let responseMakeOrder = await apiClient.post('/create-order', order);
-  console.log(responseMakeOrder)
+  // let newOrder = JSON.parse(JSON.stringify(order));
+  // let obj = {  
+  //   address: {
+  //       "building": newOrder.address.building,
+  //       "checkout_anonymous": newOrder.checkout_anonymous,
+  //       "checkout_call": false,
+  //       "checkout_delivery_date": newOrder.checkout_delivery_date,
+  //       "checkout_make_photo": newOrder.checkout_make_photo,
+  //       "checkout_reciever_address": newOrder.checkout_reciever_address,
+  //       "checkout_text_card": '',
+  //       "city": '',
+  //       "comment": newOrder.comment,
+  //       "courier_delivery": newOrder.courier_delivery ? "on" : "off",
+  //       "delivery_date": newOrder.delivery_date,
+  //       "delivery_new_date": newOrder.delivery_date,
+  //       "delivery_time": '',
+  //       "delivery_time_raw": newOrder.delivery_time,
+  //       "email": newOrder.user.email,
+  //       "entrance": newOrder.address.entrance,
+  //       "floor": newOrder.address.floor,
+  //       "index": "",
+  //       "phone": newOrder.receiver.phone,
+  //       "pickup_sam": newOrder.im_receiver,
+  //       "postcard_free": false,
+  //       "postcard_text": "",
+  //       "receiver": '',
+  //       "receiver_name": newOrder.receiver.name,
+  //       "receiver_phone": newOrder.receiver.phone,
+  //       "room": newOrder.address.room,
+  //       "send_whatsapp": false,
+  //       "street": newOrder.address.street
+  //   },
+  //   "admin_comment": "",
+  //   "archive": 0,
+  //   "cart_cost": newOrder.cart_cost,
+  //   "cost": newOrder.cost,
+  //   "cost_change": 0,
+  //   "coupon_code": "",
+  //   "coupon_discount": "0%",
+  //   "coupon_value": "",
+  //   "createdon": (new Date()).toISOString(),
+  //   "delivery": newOrder.delivery,
+  //   "delivery_cost": newOrder.delivery_cost,
+  //   "delivery_date": newOrder.delivery_date,
+  //   "delivery_rank": newOrder.delivery_rank,
+  //   "is_cost_change_number": 0,
+  //   // "num": "",
+  //   "payment": 1,
+  //   "payment_status": 1,
+  //   "properties": "{\"cf.from_city\":\"1\"}",
+  //   "source": "Офлайн",
+  //   "status": 1,
+  //   "user_id": null,
+  //   products: newOrder.products,
+  //   }
+  // newOrder.user.orderNewUser = true
+  let responseMakeOrder = await apiClient.post('/order', {order:obj, userId: null,user: newOrder.user});
 }
 
 const formatDate = (date) => {

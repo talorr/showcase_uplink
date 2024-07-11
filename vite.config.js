@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
+  server:{port: 3006},
   build: {
     target: "ES2022",
     minify: 'esbuild',
