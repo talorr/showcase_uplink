@@ -78,7 +78,7 @@
             <div class="total_count">
               <div class="total_count-case">
                 <div>
-                  Товаров (
+                  {{ sklonenie(countProduct, ['товар', 'товара', 'товаров']) }} (
                   <span class="ms2_total_count">
                     {{ countProduct }}
                   </span>
@@ -200,7 +200,10 @@ function removeFromCart(productId) {
 function removeItemInCart(productId) {
   cartInfo.removeItemInCart(productId);
 }
-
+const sklonenie = (number, txt) => {
+    let cases = [2, 0, 1, 1, 1, 2];
+    return txt[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+}
 
 
 </script>
