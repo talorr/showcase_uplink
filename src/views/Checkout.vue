@@ -185,7 +185,7 @@
           <div class="ms-footer">
             <div class="total_count">
               <div class="total_count-case">
-                <div>{{ sklonenie(countProducts, 'товар', 'товара', 'товаров') }} ({{ countProducts }})</div>
+                <div>{{ sklonenie(countProducts, 'Товар', 'Товара', 'Товаров') }} ({{ countProducts }})</div>
                 <div>
                   <span class="ms2_order_cart_cost">{{ order?.cart_cost ? cartCost : 0 }}</span> ₽
                 </div>

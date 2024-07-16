@@ -78,7 +78,7 @@
             <div class="total_count">
               <div class="total_count-case">
                 <div>
-                  {{ sklonenie(countProduct, ['товар', 'товара', 'товаров']) }} (
+                  {{ sklonenie(countProduct, ['Товар', 'Товара', 'Товаров']) }} (
                   <span class="ms2_total_count">
                     {{ countProduct }}
                   </span>
