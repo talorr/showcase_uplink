@@ -14,7 +14,7 @@
           </svg>
           <p class="cart__info-text">В корзине</p>
           <div class="cart__info">
-            <p class="cart__info-count"><span class="ms2_total_count">{{ countProduct }}</span> товаров</p>
+            <p class="cart__info-count"><span class="ms2_total_count">{{ countProduct }}</span> {{ sklonenie(countProduct, ['товар', 'товара', 'товаров']) }}</p>
             <p class="cart__info-price"><span class="ms2_total_cost">{{ priceProduct }}</span> ₽</p>
           </div>
         </router-link>
@@ -44,6 +44,10 @@ const $mainSite = proxy.$mainSite;
 const siteLogo = computed(() => $mainSite + $store.siteInfo.siteInfo.logo);
 const showCart = computed(() => $store.cartInfo.cart.length > 0);
 
+const sklonenie = (number, txt) => {
+    let cases = [2, 0, 1, 1, 1, 2];
+    return txt[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+}
 const countProduct = computed(() => {
   let count = null;
   $store.cartInfo.cart.forEach((product) => {

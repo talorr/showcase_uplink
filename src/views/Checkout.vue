@@ -185,7 +185,7 @@
           <div class="ms-footer">
             <div class="total_count">
               <div class="total_count-case">
-                <div>Товаров ({{ countProducts }})</div>
+                <div>{{ sklonenie(countProducts, 'товар', 'товара', 'товаров') }} ({{ countProducts }})</div>
                 <div>
                   <span class="ms2_order_cart_cost">{{ order?.cart_cost ? cartCost : 0 }}</span> ₽
                 </div>
@@ -558,6 +558,10 @@ function deliveryPrice(event){
     })
     order.delivery_cost = Number(delivery.price)
   }
+}
+const sklonenie = (number, txt) => {
+    let cases = [2, 0, 1, 1, 1, 2];
+    return txt[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 }
 const cartCost = computed(() => {
   const intl = new Intl.NumberFormat('ru-RU');
