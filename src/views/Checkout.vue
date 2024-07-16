@@ -227,46 +227,37 @@
       </div>
 
       <div v-else  class="container success">
-        <div class="success-title">Заказ #2407/1 успешно оформлен</div>
+        <div class="success-title">Заказ № {{ justCreatedOrder?.num }} успешно оформлен</div>
         <div class="success-header">Информация о заказе</div>
           
         <div class="success-cont">
-          {{ order.products }}
-          <div class="success-case">  
-            <img src="" alt="Сборный букет «Синева»" title="Сборный букет «Синева»">
+          <div class="success-case" v-for="product in order.products">  
+            <img :src="getImgUrl(product.image)" alt="Сборный букет «Синева»" title="Сборный букет «Синева»">
             <div class="success-desc">
-                <span>Сборный букет «Синева»</span>
-                <span> Цена: 3 600 ₽ </span>
-                <span> Количество: 2 шт.</span>
+                <span>{{ product.title }}</span>
+                <span> Цена: {{ product.cost }} ₽ </span>
+                <span> Количество: {{product.count}} шт.</span>
             </div>
-          </div>                 
-          <div class="success-case">  
-            <img src="" alt="Букет с герберами «Веснушки»" title="Букет с герберами «Веснушки»">
-            <div class="success-desc">
-                <span>Букет с герберами «Веснушки»</span>
-                <span> Цена: 2 300 ₽ <span style="text-decoration: lin">2 530руб</span></span>
-                <span> Количество: 1 шт.</span>
-            </div>
-          </div>                 
+          </div>                              
         </div>
-            
+        
         <div class="success-header">Информация о доставке</div>
-        <p>Способ доставки: <span>Балтийская 120</span></p>
-        <p>Способ оплаты: <span>Онлайн-оплата</span></p>
+        <p v-show="justCreatedOrder?.address?.courier_delivery === 'on'">Способ доставки: <span>Балтийская 120</span></p>
+        <p>Способ оплаты: <span>{{getCurrentPaymentName(justCreatedOrder.payment)}}</span></p>
         <p>Имя получателя: <span>fds</span></p>
         <p>Телефон получателя: <span>fds</span></p>    
-        <p>Дата доставки: <span style="color: #333">01.07.2024</span></p>
-        <p>Время доставки: <span style="color: #333">17:00-19:00</span></p>
+        <p>Дата доставки: <span style="color: #333">{{ justCreatedOrder?.address?.delivery_date }}</span></p>
+        <p>Время доставки: <span style="color: #333">{{ justCreatedOrder?.address?.delivery_time_raw }}</span></p>
             <br>
         <div class="success-header">Контактные данные заказчика</div>
-        <p>Имя заказчика: <span>Авфавфа</span></p>
-        <p>Телефон заказчика: <span>89278428729</span></p>
-        <p>Почта заказчика: <span>test1@test.com</span></p>
+        <p>Имя заказчика: <span>{{ order?.user?.fullname }}</span></p>
+        <p>Телефон заказчика: <span>{{order?.user?.mobilephone}}</span></p>
+        <p>Почта заказчика: <span>{{ order?.user?.email }}</span></p>
         <br>
         
         <div class="success-header">ИТОГО: </div>
-          Сумма товаров: 9 500 ₽ <br>
-          Итого: <strong>9 500</strong> ₽                
+          Сумма товаров: {{ justCreatedOrder?.cart_cost }} ₽ <br>
+          Итого: <strong>{{ justCreatedOrder?.cost }}</strong> ₽                
         <a href="/" class="success-href">Вернуться на главную</a>
       </div>
     </div>
@@ -293,6 +284,11 @@ import '@vuepic/vue-datepicker/dist/main.css'
 
 const cartInfo = useCartInfo();
 const $mainSite = proxy.$mainSite;
+
+const getCurrentPaymentName = (id) => {
+  if(!id) return '-'
+  return paymentsList.value?.find(item => id === item.id).name
+}
 
 const disableOrderButton = computed(() => {
   if(!order.courier_delivery && !order.pickup) return true
@@ -399,6 +395,48 @@ const payments = computed(() => {
   })
 });
 
+
+
+
+
+
+const requestPayment = async (orderId) => {
+
+  try {
+    const payload = {
+      catchUrl:
+        //import.meta.env.VITE_API_BASE_URL +
+        'http://localhost:3002/api/catch-yookassa-order-payment',
+        //"/api/catch-yookassa-order-payment",
+      orderId: orderId,
+    };
+
+    const response = await axios.post("http://localhost:3002/api/create-order-payment", payload);
+      console.log(response);
+    if (response.data.payment.confirmation.confirmation_url) {
+      window
+        .open(response.data.payment.confirmation.confirmation_url, "_blank")
+        .focus();
+    } else alert("Что-то пошло не так");
+  } catch (error) {
+    console.log();
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const intervals = computed(() => {
 
   let today = new Date()
@@ -474,6 +512,11 @@ async function getIntervals() {
   deliveryIntervals.value = responseIntervals.data.intervals.options.split(",")
 }
 
+
+function getImgUrl(url){
+  if(!url) return ''
+  return $mainSite + url
+}
 function init() {
   getDeliveriesList();
   getPaymentsList()
@@ -507,67 +550,108 @@ const orderCost = computed(() => {
   const intl = new Intl.NumberFormat('ru-RU');
   return intl.format(Number(order.cost))
 })
-const orderCreated = ref(false)
-async function makeOrder(){
-  // let newOrder = JSON.parse(JSON.stringify(order));
-  // let obj = {  
-  //   address: {
-  //       "building": newOrder.address.building,
-  //       "checkout_anonymous": newOrder.checkout_anonymous,
-  //       "checkout_call": false,
-  //       "checkout_delivery_date": newOrder.checkout_delivery_date,
-  //       "checkout_make_photo": newOrder.checkout_make_photo,
-  //       "checkout_reciever_address": newOrder.checkout_reciever_address,
-  //       "checkout_text_card": '',
-  //       "city": '',
-  //       "comment": newOrder.comment,
-  //       "courier_delivery": newOrder.courier_delivery ? "on" : "off",
-  //       "delivery_date": newOrder.delivery_date,
-  //       "delivery_new_date": newOrder.delivery_date,
-  //       "delivery_time": '',
-  //       "delivery_time_raw": newOrder.delivery_time,
-  //       "email": newOrder.user.email,
-  //       "entrance": newOrder.address.entrance,
-  //       "floor": newOrder.address.floor,
-  //       "index": "",
-  //       "phone": newOrder.receiver.phone,
-  //       "pickup_sam": newOrder.im_receiver,
-  //       "postcard_free": false,
-  //       "postcard_text": "",
-  //       "receiver": '',
-  //       "receiver_name": newOrder.receiver.name,
-  //       "receiver_phone": newOrder.receiver.phone,
-  //       "room": newOrder.address.room,
-  //       "send_whatsapp": false,
-  //       "street": newOrder.address.street
-  //   },
-  //   "admin_comment": "",
-  //   "archive": 0,
-  //   "cart_cost": newOrder.cart_cost,
-  //   "cost": newOrder.cost,
-  //   "cost_change": 0,
-  //   "coupon_code": "",
-  //   "coupon_discount": "0%",
-  //   "coupon_value": "",
-  //   "createdon": (new Date()).toISOString(),
-  //   "delivery": newOrder.delivery,
-  //   "delivery_cost": newOrder.delivery_cost,
-  //   "delivery_date": newOrder.delivery_date,
-  //   "delivery_rank": newOrder.delivery_rank,
-  //   "is_cost_change_number": 0,
-  //   // "num": "",
-  //   "payment": 1,
-  //   "payment_status": 1,
-  //   "properties": "{\"cf.from_city\":\"1\"}",
-  //   "source": "Офлайн",
-  //   "status": 1,
-  //   "user_id": null,
-  //   products: newOrder.products,
-  //   }
-  // newOrder.user.orderNewUser = true
-  let responseMakeOrder = await apiClient.post('/order', {order:obj, userId: null,user: newOrder.user});
+const deliveryDateFormat = (dateString) => {
+  const date = new Date(dateString);
+
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = date.getFullYear();
+
+  return `${day}.${month}.${year}`;
+} 
+
+
+function extractTime(dateString) {
+  const date = dateString.split('-')
+
+  const startDate = date[0].split(':')[0]
+  const endDate = date[1].split(':')[0]
+
+  const timeArray = [
+    { hours: startDate, minutes: 0 },
+    { hours: endDate, minutes: 0 }
+  ];
+
+  return timeArray;
 }
 
+const orderCreated = ref(false)
+async function makeOrder(){
+  order.products.map((product) => {
+    product.count = Number(product.quantity)
+    product.cost = Number(product.price)
+    product.title = product.name
+    return product
+  })
+  let newOrder = JSON.parse(JSON.stringify(order));
+
+
+  let obj = {  
+    address: {
+        "building": newOrder.address.building,
+        "checkout_anonymous": newOrder.checkout_anonymous,
+        "checkout_call": false,
+        "checkout_delivery_date": newOrder.checkout_delivery_date,
+        "checkout_make_photo": newOrder.checkout_make_photo,
+        "checkout_reciever_address": newOrder.checkout_reciever_address,
+        "checkout_text_card": '',
+        "city": '',
+        "comment": newOrder.comment,
+        "courier_delivery": newOrder.courier_delivery ? "on" : "off",
+        "delivery_date": deliveryDateFormat(newOrder.delivery_date),
+        'delivery_new_date': deliveryDateFormat(newOrder.delivery_date),
+        "delivery_time": extractTime(newOrder?.delivery_time),
+        "delivery_time_raw": newOrder?.delivery_time,
+        "email": newOrder.user.email,
+        "entrance": newOrder.address.entrance,
+        "floor": newOrder.address.floor,
+        "index": "",
+        "phone": newOrder.receiver.phone,
+        "pickup_sam": newOrder.im_receiver,
+        "postcard_free": false,
+        "postcard_text": "",
+        "receiver": '',
+        "receiver_name": newOrder.receiver.name,
+        "receiver_phone": newOrder.receiver.phone,
+        "room": newOrder.address.room,
+        "send_whatsapp": false,
+        "street": newOrder.address.street
+    },
+    "admin_comment": "",
+    "archive": 0,
+    "cart_cost": newOrder.cart_cost,
+    "cost": newOrder.cost,
+    "cost_change": 0,
+    "coupon_code": "",
+    "coupon_discount": "0%",
+    "coupon_value": "",
+    "createdon": (new Date()).toISOString(),
+    "delivery": newOrder.delivery,
+    "delivery_cost": newOrder.delivery_cost,
+    "delivery_date": newOrder.delivery_date,
+    "delivery_rank": newOrder.delivery_rank,
+    "is_cost_change_number": 0,
+    "payment": newOrder.payment,
+    "payment_status": 1,
+    "properties": "{\"cf.from_city\":\"1\"}",
+    "source": "Корзина",
+    "status": 1,
+    "user_id": null,
+    products: newOrder.products,
+    }
+  newOrder.user.orderNewUser = true
+  let {data: responseMakeOrder,status} = await apiClient.post('http://localhost:3002/api/order', {order:obj, userId: null,user: newOrder.user});
+
+  if(status === 200){
+    console.log(responseMakeOrder.orderId);
+    //await requestPayment(responseMakeOrder.orderId)
+    orderCreated.value = true
+    justCreatedOrder.value = (await apiClient.get('http://localhost:3002/api/order?id=' + responseMakeOrder.data.orderId)).data.order;
+
+  }
+  
+}
+const justCreatedOrder = ref(-1)
 const formatDate = (date) => {
   const day = date.getDate();
   const month = ("0" + (date.getMonth() + 1)).slice(-2);
