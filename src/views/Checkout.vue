@@ -23,10 +23,10 @@
                 <label for="checkout_sender">Я сам получу заказ</label>
               </div>
               <div v-if="!order.im_receiver" class="form-group row input-parent checkout_sender-group">
-                <input type="text" placeholder="Имя получателя*" name="receiver_name" v-model="order.receiver.name" class="form-control">
+                <input :class="{'error': !validateReceiverInfo?.obj['name']}" type="text" placeholder="Имя получателя*" name="receiver_name" v-model="order.receiver.name" class="form-control">
               </div>
               <div v-if="!order.im_receiver" class="form-group row input-parent checkout_sender-group">
-                <input type="text" placeholder="Телефон получателя*" name="receiver_phone" v-model="order.receiver.phone" class="form-control">
+                <input :class="{'error': !validateReceiverInfo?.obj['phone']}" type="text" placeholder="Телефон получателя*" name="receiver_phone" v-model="order.receiver.phone" class="form-control">
               </div>
             </div>
           </div>
@@ -244,8 +244,9 @@
         <div class="success-header">Информация о доставке</div>
         <p v-show="justCreatedOrder?.address?.courier_delivery === 'on'">Способ доставки: <span>Балтийская 120</span></p>
         <p>Способ оплаты: <span>{{getCurrentPaymentName(justCreatedOrder.payment)}}</span></p>
-        <p>Имя получателя: <span>fds</span></p>
-        <p>Телефон получателя: <span>fds</span></p>    
+         
+        <p v-show="order.receiver.name">Имя получателя: <span>{{ order.receiver.name }}</span></p>
+        <p v-show="order.receiver.phone">Телефон получателя: <span>{{order.receiver.phone}}</span></p>    
         <p>Дата доставки: <span style="color: #333">{{ justCreatedOrder?.address?.delivery_date }}</span></p>
         <p>Время доставки: <span style="color: #333">{{ justCreatedOrder?.address?.delivery_time_raw }}</span></p>
             <br>
@@ -294,6 +295,7 @@ const disableOrderButton = computed(() => {
   if(!order.courier_delivery && !order.pickup) return true
   if(order.courier_delivery && validateOrderDeliveryInfo.value.errorsCount > 0) return true
   if(validateClientInfo.value.errorsCount > 0) return true
+  if(validateReceiverInfo.value.errorsCount > 0) return true
 })
 
 const titles = {
@@ -382,7 +384,22 @@ const validateClientInfo = computed(() => {
   })
   return {obj,errorsCount}
 })
-
+const validateReceiverInfo = computed(() => {
+  let obj = {
+    name: true,
+    phone: true
+  }
+  let errorsCount = 0
+  if(order.im_receiver) return {obj,errorsCount}
+  
+  Object.entries(order.receiver).map(([key, item]) => {
+    if (item.length === 0) {
+      obj[key] = false;
+      errorsCount++;
+    }
+  })
+  return {obj,errorsCount}
+})
 const payments = computed(() => {
   order.payment = 0
 
