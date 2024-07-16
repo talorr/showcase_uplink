@@ -646,7 +646,7 @@ async function makeOrder(){
     console.log(responseMakeOrder.orderId);
     //await requestPayment(responseMakeOrder.orderId)
     orderCreated.value = true
-    justCreatedOrder.value = (await apiClient.get('/order?id=' + responseMakeOrder.data.orderId)).data.order;
+    justCreatedOrder.value = (await apiClient.get('/order?id=' + responseMakeOrder.orderId)).data.order;
 
   }
   
