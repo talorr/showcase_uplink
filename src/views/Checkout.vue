@@ -640,13 +640,13 @@ async function makeOrder(){
     products: newOrder.products,
     }
   newOrder.user.orderNewUser = true
-  let {data: responseMakeOrder,status} = await apiClient.post('http://localhost:3002/api/order', {order:obj, userId: null,user: newOrder.user});
+  let {data: responseMakeOrder,status} = await apiClient.post('/order', {order:obj, userId: null,user: newOrder.user});
 
   if(status === 200){
     console.log(responseMakeOrder.orderId);
     //await requestPayment(responseMakeOrder.orderId)
     orderCreated.value = true
-    justCreatedOrder.value = (await apiClient.get('http://localhost:3002/api/order?id=' + responseMakeOrder.data.orderId)).data.order;
+    justCreatedOrder.value = (await apiClient.get('/order?id=' + responseMakeOrder.data.orderId)).data.order;
 
   }
   
