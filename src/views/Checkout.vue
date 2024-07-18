@@ -669,7 +669,7 @@ async function makeOrder(){
     orderCreated.value = true
     justCreatedOrder.value = (await apiClient.get('/order?id=' + responseMakeOrder.orderId)).data.order;
     // Create payment
-    const paymentResponse = await apiClient.post('/create-payment', {
+    const paymentResponse = await apiClient.post('/create-order-payment', {
       amount: newOrder.cost,
       currency: 'RUB',
       description: `Order ${responseMakeOrder.orderId}`,
