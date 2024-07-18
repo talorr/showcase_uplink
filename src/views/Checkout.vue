@@ -668,7 +668,18 @@ async function makeOrder(){
     //await requestPayment(responseMakeOrder.orderId)
     orderCreated.value = true
     justCreatedOrder.value = (await apiClient.get('/order?id=' + responseMakeOrder.orderId)).data.order;
+    // Create payment
+    const paymentResponse = await apiClient.post('/create-payment', {
+      amount: newOrder.cost,
+      currency: 'RUB',
+      description: `Order ${responseMakeOrder.orderId}`,
+    });
 
+    if (paymentResponse.status === 200) {
+      const { id, confirmation } = paymentResponse.data;
+      // Redirect user to the payment page
+      window.location.href = confirmation.confirmation_url;
+    }
   }
   
 }
