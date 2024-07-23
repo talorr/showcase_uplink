@@ -10,9 +10,10 @@
     align-items: center;
     justify-content: center;
 
-    &__wrap{
+    &__wrap {
       position: relative;
-      .product-pagination{
+
+      .product-pagination {
         margin: 5px 0;
         height: 20px;
         top: auto;
@@ -33,17 +34,18 @@
       position: relative;
 
       .thumbSwiper {
-        div{
+        div {
           margin: auto;
-          justify-content:center;
+          justify-content: center;
           gap: 5px;
-          .swiper-slide:not(.padding-30){
+
+          .swiper-slide:not(.padding-30) {
             margin: 0 !important;
             height: fit-content !important;
             width: fit-content !important;
           }
 
-          img{
+          img {
             width: 70px;
             max-width: 70px;
             aspect-ratio: 1;
@@ -63,6 +65,7 @@
           aspect-ratio: 1;
           object-fit: cover;
           border-radius: 5px;
+
           @media (max-width: 550px) {
             width: 100dvw;
           }
@@ -156,21 +159,24 @@
     gap: 3px;
     justify-content: center;
 
-    p, b {
+    p,
+    b {
       font-size: 14px;
       font-weight: 500;
     }
   }
 
-  &__info{
+  &__info {
     &-price {
       display: flex;
       align-items: center;
       justify-content: space-between;
       height: 36px;
+
       @media (max-width: 550px) {
         gap: 24px;
       }
+
       div {
         height: inherit;
       }
@@ -202,7 +208,8 @@
         }
       }
     }
-    &-oldprice{
+
+    &-oldprice {
       span {
         font-size: 12px;
         text-decoration: line-through;
@@ -212,12 +219,6 @@
   }
 
   &__info-tocart {
-    @media (max-width: 550px) {
-      min-width: 10px;
-      width: unset;
-      max-width: none;
-      flex-grow: 1;
-    }
     width: 100%;
     max-width: 220px;
     height: 36px;
@@ -231,7 +232,16 @@
     font-size: 14px;
     cursor: pointer;
     border: none;
-    transition: background-color 0.1s ease, color 0.1s ease, outline 0.1s ease;
+    transition: background-color 0.1s ease,
+    color 0.1s ease,
+    outline 0.1s ease;
+
+    @media (max-width: 550px) {
+      min-width: 10px;
+      width: unset;
+      max-width: none;
+      flex-grow: 1;
+    }
 
     svg path {
       transition: fill 0.1s ease;
@@ -240,32 +250,32 @@
     &:hover {
       background-color: white;
       color: black;
+      outline: 1px solid #e4e4e4;
 
       svg path {
         fill: black;
       }
-
-      outline: 1px solid #e4e4e4;
     }
   }
 }
 
 
 
-.swiper-pagination{
+.swiper-pagination {
   top: auto;
+
   .swiper-pagination-bullet-active {
     width: 40px;
     border-radius: 5px;
     position: relative;
     background: #E6E6E6;
 
-    div{
-      position:absolute;
+    div {
+      position: absolute;
       background: #636363;
-      top:0;
+      top: 0;
       height: 100%;
-      left:0;
+      left: 0;
       border-radius: 5px;
       width: 100%;
       transition: max-width 1ms linear;

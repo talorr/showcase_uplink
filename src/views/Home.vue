@@ -9,7 +9,7 @@
           Букеты в наличии
         </h1>
 
-        <select class="sort-select" v-model="filter.sortBy">
+        <select class="sort-select" v-model="filter.sortBy" @change="getProducts(currentPage)">
           <option v-for="(sort, key) in sortsList" :key="key" :value="sort"> {{ sort.name }} </option>
         </select>
       </div>
@@ -22,35 +22,8 @@
         />
       </div>
 
-      <div class="pagination--wrap">
-        <ul class="pagination">
-          <li
-              class="page-item"
-              :class="{disabled : currentPage === 1}"
-              @click="getProducts(1)"
-          >
-            <span class="page-link">Первая</span>
-          </li>
+      <Pagination v-if="filter.limit" :offset="filter.offset" :limit="filter.limit" :pages="countPage" @openPage="getProducts"/>
 
-          <li
-              class="page-item"
-              :class="{active : currentPage === page}"
-              v-for="page in countPage"
-              :key="page"
-              @click="getProducts(page)"
-          >
-            <span class="page-link">{{ page }}</span>
-          </li>
-
-          <li
-              class="page-item"
-              :class="{disabled : currentPage === countPage}"
-              @click="getProducts(countPage)"
-          >
-            <span class="page-link">Последняя</span>
-          </li>
-        </ul>
-      </div>
       <BottomCartMobile/>
     </main>
     <Footer/>
@@ -68,6 +41,7 @@ import ProductItem from "@/components/ProductItem.vue";
 import Footer from "@/components/Footer.vue";
 import apiClient from "@/axios.js";
 import BottomCartMobile from "@/components/BottomCartMobile.vue";
+import Pagination from "@/components/Pagination.vue";
 
 const sortsList = ref([
   {
@@ -97,33 +71,33 @@ const sortsList = ref([
   },
 ]);
 let products = ref([]);
-let currentPage = ref(1);
+let currentPage = ref(0);
 let countPage = ref(1);
-let limitPage = ref(28);
+// let limitPage = ref(28);
 
-let filter = reactive({
+let filter = ref({
   categoryId: 0,
   sortBy: {
     name: "По умолчанию",
     sortby: "rank",
     dir: "asc"
   },
-  limit: 0,
+  limit: 28,
   offset: 0,
   needComposition: 1
 });
 
 let getCountProducts = async () => {
-  let response = await apiClient.get(`/products-count?limit=${limitPage.value}`);
+  let response = await apiClient.get(`/products-count?limit=${filter.value.limit}`);
   countPage.value = response.data.pages;
 };
 
 let getProducts = async (page) => {
-  let refFilter = {...filter}
-
-  refFilter.sortBy = JSON.stringify(refFilter.sortBy)
-  refFilter.limit = limitPage.value
-  refFilter.offset = (page - 1) * limitPage.value
+  let refFilter = {...filter.value}
+  refFilter.sortBy = JSON.stringify(filter.value.sortBy)
+  // refFilter.limit = filter.value.limit
+  refFilter.offset = page * filter.value.limit
+  filter.value.offset = refFilter.offset
 
   let response = await apiClient.get(`/products?${new URLSearchParams(refFilter)}`);
   products.value = response.data.products;

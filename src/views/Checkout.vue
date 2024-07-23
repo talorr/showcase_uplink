@@ -1,6 +1,6 @@
 <template>
   <div>
-    <HeaderCheckout/>
+    <HeaderCheckout :goto-main-page="orderCreated"/>
 
     <div class="header-margin container cart-block">
       <div v-if="!orderCreated" class="order-input">
@@ -9,9 +9,11 @@
           <div class="order-input__row">
             <div class="order-input__container">
               <div v-for="(info, info_key) in order.user" :key="info_key" class="form-group row input-parent">
-                <input type="text" :class="{'error': !validateClientInfo?.obj[info_key]}" :placeholder="titles[info_key]" :name="info_key" v-model="order.user[info_key]" required>
+                <input type="text" :class="{'error': !validateInfo[info_key]}" :placeholder="titles[info_key]" @input="validateInfo[info_key] = true, clearErrorMessage(info_key)" :name="info_key" v-model="order.user[info_key]" required>
+                <span class="validate-info-message" v-if="findErrorMessage(info_key)">{{ findErrorMessage(info_key) }}</span>
               </div>
-              <div class="form-group"></div>
+              <div class="form-group">
+              </div>
             </div>
           </div>
 
@@ -19,73 +21,74 @@
           <div class="order-input__row">
             <div class="order-input__container">
               <div class="card-checkbox">
-                <input id="checkout_sender" name="checkout_sender" type="checkbox" v-model="order.im_receiver">
+                <input id="checkout_sender" name="checkout_sender" type="checkbox" @change="order.address.pickup_sam ? (validateInfo.receiver_name = true, validateInfo.receiver_phone = true) : ''" v-model="order.address.pickup_sam" :true-value="1" :false-value="0">
                 <label for="checkout_sender">Я сам получу заказ</label>
               </div>
-              <div v-if="!order.im_receiver" class="form-group row input-parent checkout_sender-group">
-                <input :class="{'error': !validateReceiverInfo?.obj['name']}" type="text" placeholder="Имя получателя*" name="receiver_name" v-model="order.receiver.name" class="form-control">
+              <div v-if="!order.address.pickup_sam" class="form-group row input-parent checkout_sender-group">
+                <input :class="{'error': !validateInfo['receiver_name']}" type="text" placeholder="Имя получателя*" @input="validateInfo.receiver_name = true" name="receiver_name" v-model="order.address.receiver_name" class="form-control">
               </div>
-              <div v-if="!order.im_receiver" class="form-group row input-parent checkout_sender-group">
-                <input :class="{'error': !validateReceiverInfo?.obj['phone']}" type="text" placeholder="Телефон получателя*" name="receiver_phone" v-model="order.receiver.phone" class="form-control">
+              <div v-if="!order.address.pickup_sam" class="form-group row input-parent checkout_sender-group">
+                <input :class="{'error': !validateInfo['receiver_phone']}" type="text" placeholder="Телефон получателя*" @input="validateInfo.receiver_phone = true" name="receiver_phone" v-model="order.address.receiver_phone" class="form-control">
               </div>
             </div>
           </div>
 
           <div class="order-input__row">
             <h4 class=order-input__row-title>Укажите адрес доставки</h4>
-            <span class="validation-text" v-if="!order.courier_delivery && !order.pickup" name="deliverytype">Необходимо выбрать способ доставки!</span>
+            <span class="validation-text" v-if="!validateInfo.delivery_rank" name="deliverytype">Необходимо выбрать способ доставки!</span>
+            <!-- <span class="validation-text" v-if="!order.courier_delivery && !order.pickup" name="deliverytype">Необходимо выбрать способ доставки!</span> -->
             
             <div class="order-input__container">
-              <div v-if="!order.courier_delivery" class="card-checkbox card-checkbox-pickup">
-                <input type="checkbox" v-model="order.pickup" id="delivery_type-pickup" :value="1" @change="deliveryPrice($event)">
-                <label for="delivery_type-pickup">Самовывоз</label>
+              <div v-if="order.delivery_rank == 0 || order.delivery_rank == null" @click="order.delivery_rank == 0 ? order.delivery_rank = null : order.delivery_rank = 0, validateInfo.delivery_rank = true" class="card-checkbox card-checkbox-pickup">
+                <input type="checkbox" :checked="order.delivery_rank == 0">
+                <span>Самовывоз</span>
               </div>
-              <div v-if="!order.pickup" class="card-checkbox card-checkbox-courier">
-                <input type="checkbox" id="delivery_type-courier" v-model="order.courier_delivery" :checked="order.courier_delivery">
-                <label for="delivery_type-courier">Доставка курьером</label>
+              <div v-if="order.delivery_rank == 1 || order.delivery_rank == null" @click="order.delivery_rank == 1 ? order.delivery_rank = null : order.delivery_rank = 1, validateInfo.delivery_rank = true" class="card-checkbox card-checkbox-courier">
+                <input type="checkbox" id="delivery_type-courier" :checked="order.delivery_rank == 1">
+                <span>Доставка курьером</span>
               </div>
 
-              <div class="block-pickup" v-if="order.pickup">
+              <div class="block-pickup" v-if="order.delivery_rank == 0">
                 <div
                     class="card-checkbox"
                     v-for="(delivery, delivery_key) in deliveriesList"
                     :key="delivery_key"
                 >
-                  <input type="radio" :id="`delivery-${delivery.id}`" :value="delivery.id" v-model="order.delivery" @change="deliveryPrice($event)">
+                  <input type="radio" :id="`delivery-${delivery.id}`" :value="delivery.id" v-model="order.delivery" @change="deliveryPrice(order.delivery)">
                   <label :for="`delivery-${delivery.id}`">{{ delivery.name }}</label>
                 </div>
               </div>
 
-              <div class="block-courier" v-if="order.courier_delivery">
+              <div class="block-courier" v-if="order.delivery_rank == 1">
                 <div class="card-checkbox">
-                  <input id="checkout_reciever_address" type="checkbox" v-model="order.checkout_reciever_address">
+                  <input id="checkout_reciever_address" type="checkbox" :true-value="1" :false-value="0" v-model="order.address.checkout_reciever_address">
                   <label for="checkout_reciever_address">Уточнить адрес у получателя</label>
                 </div>
 
-                <div class="block-courier-select" :class="order.checkout_reciever_address ? 'block-courier-case' : ''">
+                <div class="block-courier-select" :class="order.address.checkout_reciever_address ? 'block-courier-case' : ''">
                   <div class="form-select2 ">
-                    <select name="delivery" class="delivery-select select2" v-model="order.delivery" @change="deliveryPrice($event)">
+                    <select name="delivery" class="delivery-select select2" v-model="order.delivery" @change="deliveryPrice(order.delivery)">
                       <option v-for="(delivery, delivery_key) in deliveriesList" :key="delivery_key" :value="delivery.id"> {{ delivery.name }} </option>
                     </select>
                   </div>
 
-                  <div v-if="order.checkout_reciever_address" class="form-group"></div>
-
+                  <div v-if="order.address.checkout_reciever_address" class="form-group"></div>
+                  <template v-if="!order.address.checkout_reciever_address">
                   <div
                       v-for="(address, address_key) in order.address"
                       :key="address_key"
                       class="form-group row input-parent group-address"
-                
-                      v-show="!order.checkout_reciever_address"
+                      v-show=" ['street', 'building', 'entrance', 'floor', 'room'].includes(address_key) "
                   >
                     <input
                         type="text"
                         :placeholder="titles[address_key]"
                         :name="address_key"
-                        :class="{ 'error': validateOrderDeliveryInfo.obj[address_key] == false }"
+                        :class="{ 'error': validateInfo[address_key] == false }"
                         v-model="order.address[address_key]"
                         class="form-control">
                   </div>
+                  </template>
                 </div>
 
                 <div class="form-group row input-parent form-group-textarea">
@@ -185,7 +188,7 @@
           <div class="ms-footer">
             <div class="total_count">
               <div class="total_count-case">
-                <div>{{ sklonenie(countProducts, 'Товар', 'Товара', 'Товаров') }} ({{ countProducts }})</div>
+                <div>{{ sklonenie(countProducts, ['Товар', 'Товара', 'Товаров']) }} ({{ countProducts }})</div>
                 <div>
                   <span class="ms2_order_cart_cost">{{ order?.cart_cost ? cartCost : 0 }}</span> ₽
                 </div>
@@ -245,8 +248,8 @@
         <p v-show="justCreatedOrder?.address?.courier_delivery === 'on'">Способ доставки: <span>Балтийская 120</span></p>
         <p>Способ оплаты: <span>{{getCurrentPaymentName(justCreatedOrder.payment)}}</span></p>
          
-        <p v-show="order.receiver.name">Имя получателя: <span>{{ order.receiver.name }}</span></p>
-        <p v-show="order.receiver.phone">Телефон получателя: <span>{{order.receiver.phone}}</span></p>    
+        <p v-show="order.address.receiver_name">Имя получателя: <span>{{ order.address.receiver_name }}</span></p>
+        <p v-show="order.address.receiver_phone">Телефон получателя: <span>{{ order.address.receiver_phone }}</span></p>    
         <p>Дата доставки: <span style="color: #333">{{ justCreatedOrder?.address?.delivery_date }}</span></p>
         <p>Время доставки: <span style="color: #333">{{ justCreatedOrder?.address?.delivery_time_raw }}</span></p>
             <br>
@@ -282,6 +285,7 @@ import {useCartInfo} from "@/stores/cartInfo";
 import apiClient from "@/axios.js";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import { getImageOptimized } from "@/composables/utils";
 
 const cartInfo = useCartInfo();
 const $mainSite = proxy.$mainSite;
@@ -292,10 +296,18 @@ const getCurrentPaymentName = (id) => {
 }
 
 const disableOrderButton = computed(() => {
-  if(!order.courier_delivery && !order.pickup) return true
-  if(order.courier_delivery && validateOrderDeliveryInfo.value.errorsCount > 0) return true
-  if(validateClientInfo.value.errorsCount > 0) return true
-  if(validateReceiverInfo.value.errorsCount > 0) return true
+  for (const key in validateInfo.value) {
+    if (Object.hasOwnProperty.call(validateInfo.value, key)) {
+      const element = validateInfo.value[key];
+      if (!element) return true
+    }
+  }
+
+  return false
+  // if(!order.courier_delivery && !order.pickup) return true
+  // if(order.courier_delivery && validateOrderDeliveryInfo.value.errorsCount > 0) return true
+  // if(validateInfo.value.errorsCount > 0) return true
+  // if(validateInfo.value.errorsCount > 0) return true
 })
 
 const titles = {
@@ -309,26 +321,26 @@ const titles = {
   room: "Квартира",
 }
 
-const order =  reactive({
+const order = reactive({
   checkout_anonymous: false,// отправить анонимно
   checkout_delivery_date: false,// Уточнить дату и время у получателя (или Уточнить у  получателя)
   checkout_make_photo: false,// сделать фото с получателем
-  checkout_reciever_address: false,// уточнить адрес у получателя
   delivery_date: "", // дата доставки(можно не убирать время)
   delivery_time: "", // времядоставки
-  pickup: false, // самовывоз
-  im_receiver: false, // я и есть получатель
-  courier_delivery: false, // доставка курьером
+  // im_receiver: false, // я и есть получатель
+  // delivery_rank: null, // доставка курьером !order.courier_delivery && !order.pickup
   comment: "",
 
   address: {
     street: "",// улица,
-    
     building: "", // дом
     entrance: "", // подъезд
     floor: "", // этаж
     room: "", // квартира
-
+    receiver_name: '',
+    receiver_phone: '',
+    pickup_sam: 0,
+    checkout_reciever_address: 0, // уточнить адрес у получателя
   },
 
   user: { // контактные данные
@@ -337,83 +349,36 @@ const order =  reactive({
     email: ""// e-mail
   },
 
-  receiver: {
-    name: "",// имяполучателя
-    phone: "", // телефон получателя
-  },
-
   cart_cost: 0, // сумма товаров
   cost: 0, // сумма заказов (она же ИТОГО)
   delivery: 0,// вариант доставки
   delivery_cost: 0, // стоимость доставки
-  delivery_rank: '0',// способ доставки, 0 – самовывоз, 1 – Доставка курьером
+  delivery_rank: 0,// способ доставки, 0 – самовывоз, 1 – Доставка курьером
   payment: 0,// способ оплаты
 });
 
 let deliveryIntervals = ref([]);
 let deliveriesList = ref([]);
 let paymentsList = ref([]);
-const validateOrderDeliveryInfo = computed(() => {
-  let obj = {
-    building: true,
-    room: true,
-    street: true
-  }
-  let errorsCount = 0
-  Object.entries(order.address).map(([key, item]) => {
-    if (item.length === 0 && !!obj[key]) {
-      obj[key] = false;
-      errorsCount++;
-    }
-  })
-  return {obj,errorsCount}
-})
-const validateClientInfo = computed(() => {
-  let obj = {
-    fullname: true,
-    mobilephone: true,
-    email: true  
-  }
-  let errorsCount = 0
-  Object.entries(order.user).map(([key, item]) => {
-    if (item.length === 0) {
-      obj[key] = false;
-      errorsCount++;
-    }
 
-  })
-  return {obj,errorsCount}
+const validateInfo = ref({
+  fullname: true,
+  mobilephone: true,
+  email: true,
+  receiver_name: true,
+  receiver_phone: true,
+  delivery_rank: true,
+  building: true,
+  room: true,
+  street: true
 })
-const validateReceiverInfo = computed(() => {
-  let obj = {
-    name: true,
-    phone: true
-  }
-  let errorsCount = 0
-  if(order.im_receiver) return {obj,errorsCount}
-  
-  Object.entries(order.receiver).map(([key, item]) => {
-    if (item.length === 0) {
-      obj[key] = false;
-      errorsCount++;
-    }
-  })
-  return {obj,errorsCount}
-})
+
 const payments = computed(() => {
   order.payment = 0
-
-  let delivery = deliveriesList.value.find((item) =>{
-    if (item.id === order.delivery) return item
-  })
-
-  return paymentsList.value?.filter((payment) => {
-    if (delivery.payments.indexOf(payment.id) > -1) return payment
-  })
-});
-
-
-
+  let delivery = deliveriesList.value.find(item => item.id === order.delivery)
+  if (delivery) return paymentsList.value?.filter(payment => delivery.payments.indexOf(payment.id) > -1)
+  return []
+})
 
 
 
@@ -439,20 +404,6 @@ const requestPayment = async (orderId) => {
     console.log();
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 const intervals = computed(() => {
 
@@ -516,7 +467,7 @@ async function getDeliveriesList() {
   deliveriesList.value = responseDeliveries.data.deliveries
 
   order.delivery = deliveriesList.value[0].id
-  order.delivery_cost = order.pickup ? 0 : Number(deliveriesList.value[0].price)
+  order.delivery_cost = Number(deliveriesList.value[0].price)
 }
 
 async function getPaymentsList() {
@@ -532,8 +483,9 @@ async function getIntervals() {
 
 function getImgUrl(url){
   if(!url) return ''
-  return $mainSite + url
+  return getImageOptimized(url) + '?width=100&height=100&format=webp'
 }
+
 function init() {
   getDeliveriesList();
   getPaymentsList()
@@ -549,28 +501,35 @@ function init() {
 const initDeliverytime = (interval) => {
   order.delivery_time = interval?.value
 }
-function deliveryPrice(event){
-  if (order.pickup){
-    order.delivery_cost = 0
-  }else{
-    let delivery = deliveriesList.value.find((elem) =>{
-      if (Number(elem.id) === Number(event.target.value)) return elem
-    })
+
+function deliveryPrice(deliveryId) {
+  let delivery = deliveriesList.value.find(elem => elem.id == deliveryId)
+  if (delivery.price.includes('%')) {
+    let percentage = Number(delivery.price.replace('%', ''))
+    order.delivery_cost = Math.round((order.cost / 100) * percentage * 100 ) / 100
+  }
+  else {
     order.delivery_cost = Number(delivery.price)
   }
+
+  if (order.cost < 0) order.cost = 0
 }
+
 const sklonenie = (number, txt) => {
     let cases = [2, 0, 1, 1, 1, 2];
     return txt[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 }
+
 const cartCost = computed(() => {
   const intl = new Intl.NumberFormat('ru-RU');
   return intl.format(Number(order.cart_cost))
 })
+
 const orderCost = computed(() => {
   const intl = new Intl.NumberFormat('ru-RU');
   return intl.format(Number(order.cost))
 })
+
 const deliveryDateFormat = (dateString) => {
   const date = new Date(dateString);
 
@@ -580,7 +539,6 @@ const deliveryDateFormat = (dateString) => {
 
   return `${day}.${month}.${year}`;
 } 
-
 
 function extractTime(dateString) {
   const date = dateString.split('-')
@@ -597,7 +555,16 @@ function extractTime(dateString) {
 }
 
 const orderCreated = ref(false)
-async function makeOrder(){
+
+const errorMessages = ref({})
+
+const findErrorMessage = (key) => {
+  return errorMessages.value[key] || ''
+}
+
+const clearErrorMessage = (key) => delete errorMessages.value[key]
+
+async function makeOrder() {
   order.products.map((product) => {
     product.count = Number(product.quantity)
     product.cost = Number(product.price)
@@ -606,37 +573,37 @@ async function makeOrder(){
   })
   let newOrder = JSON.parse(JSON.stringify(order));
 
-
-  let obj = {  
+  let obj = {
+    user: newOrder.user,
     address: {
-        "building": newOrder.address.building,
-        "checkout_anonymous": newOrder.checkout_anonymous,
-        "checkout_call": false,
-        "checkout_delivery_date": newOrder.checkout_delivery_date,
-        "checkout_make_photo": newOrder.checkout_make_photo,
-        "checkout_reciever_address": newOrder.checkout_reciever_address,
-        "checkout_text_card": '',
-        "city": '',
-        "comment": newOrder.comment,
-        "courier_delivery": newOrder.courier_delivery ? "on" : "off",
-        "delivery_date": deliveryDateFormat(newOrder.delivery_date),
-        'delivery_new_date': deliveryDateFormat(newOrder.delivery_date),
-        "delivery_time": extractTime(newOrder?.delivery_time),
-        "delivery_time_raw": newOrder?.delivery_time,
-        "email": newOrder.user.email,
-        "entrance": newOrder.address.entrance,
-        "floor": newOrder.address.floor,
-        "index": "",
-        "phone": newOrder.receiver.phone,
-        "pickup_sam": newOrder.im_receiver,
-        "postcard_free": false,
-        "postcard_text": "",
-        "receiver": '',
-        "receiver_name": newOrder.receiver.name,
-        "receiver_phone": newOrder.receiver.phone,
-        "room": newOrder.address.room,
-        "send_whatsapp": false,
-        "street": newOrder.address.street
+      "building": newOrder.address.building,
+      "checkout_anonymous": newOrder.checkout_anonymous,
+      "checkout_call": false,
+      "checkout_delivery_date": newOrder.checkout_delivery_date,
+      "checkout_make_photo": newOrder.checkout_make_photo,
+      "checkout_reciever_address": newOrder.address.checkout_reciever_address,
+      "checkout_text_card": '',
+      "city": '',
+      "comment": newOrder.comment,
+      "courier_delivery": newOrder.courier_delivery ? "on" : "off",
+      "delivery_date": deliveryDateFormat(newOrder.delivery_date),
+      'delivery_new_date': deliveryDateFormat(newOrder.delivery_date),
+      "delivery_time": extractTime(newOrder?.delivery_time),
+      "delivery_time_raw": newOrder?.delivery_time,
+      "email": newOrder.user.email,
+      "entrance": newOrder.address.entrance,
+      "floor": newOrder.address.floor,
+      "index": "",
+      // "receiver_phone": newOrder.address.receiver_phone,
+      "pickup_sam": newOrder.address.pickup_sam,
+      "postcard_free": false,
+      "postcard_text": "",
+      "receiver": '',
+      "receiver_name": newOrder.address.receiver_name,
+      "receiver_phone": newOrder.address.receiver_phone,
+      "room": newOrder.address.room,
+      "send_whatsapp": false,
+      "street": newOrder.address.street
     },
     "admin_comment": "",
     "archive": 0,
@@ -659,30 +626,37 @@ async function makeOrder(){
     "status": 1,
     "user_id": null,
     products: newOrder.products,
-    }
-  newOrder.user.orderNewUser = true
-  let {data: responseMakeOrder,status} = await apiClient.post('/order', {order:obj, userId: null,user: newOrder.user});
+  }
 
-  if(status === 200){
-    console.log(responseMakeOrder.orderId);
+  try {
+    let { data: responseMakeOrder } = await apiClient.post('/create-order', { order: obj });
+
     //await requestPayment(responseMakeOrder.orderId)
+    cartInfo.clearCart()
     orderCreated.value = true
     justCreatedOrder.value = (await apiClient.get('/order?id=' + responseMakeOrder.orderId)).data.order;
     // Create payment
-    const paymentResponse = await apiClient.post('/create-order-payment', {
-      amount: newOrder.cost,
-      currency: 'RUB',
-      description: `Order ${responseMakeOrder.orderId}`,
-    });
+    // const paymentResponse = await apiClient.post('/create-order-payment', {
+    //   amount: newOrder.cost,
+    //   currency: 'RUB',
+    //   description: `Order ${responseMakeOrder.orderId}`,
+    // });
 
-    if (paymentResponse.status === 200) {
-      const { id, confirmation } = paymentResponse.data;
-      // Redirect user to the payment page
-      window.location.href = confirmation.confirmation_url;
+    // if (paymentResponse.status === 200) {
+    //   const { id, confirmation } = paymentResponse.data;
+    //   // Redirect user to the payment page
+    //   window.location.href = confirmation.confirmation_url;
+    // }
+  } catch (error) {
+    if (error.response.data.notValidFields.length) {
+      for (const row of error.response.data.notValidFields) {
+        errorMessages.value[row.field] = row.message
+        validateInfo.value[row.field] = false
+      }
     }
   }
-  
 }
+
 const justCreatedOrder = ref(-1)
 const formatDate = (date) => {
   const day = date.getDate();
@@ -707,7 +681,6 @@ onMounted(() => {
 watch(() => order, () => {
   order.cost = order.cart_cost + order.delivery_cost - order.discount_cost
 }, { deep: true });
-
-
-
 </script>
+
+<style lang="scss" scoped src="@scss/order.scss"></style>

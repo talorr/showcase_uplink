@@ -39,6 +39,8 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@assets-images': fileURLToPath(new URL('./src/assets/images', import.meta.url)),
+      '@scss': fileURLToPath(new URL('./src/assets/style', import.meta.url)),
+      '@composables': fileURLToPath(new URL('./src/composables', import.meta.url)),
     }
   }
 })

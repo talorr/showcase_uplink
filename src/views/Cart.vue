@@ -102,13 +102,13 @@
                     <span>₽</span>
                   </div>
                 </div>
-                <div class="total-discount">
+                <!-- <div class="total-discount">
                   <div class="total-discount-plain">{{ discountPercent }} %</div>
                   <div class="total-discount-summ">
                       <span class="ms2_total_discount">{{ discountCost }}</span>
                       <span> ₽</span>
                   </div>
-                </div>
+                </div> -->
                 <router-link to="/checkout" class="make-order make-order-click">
                   Оформить
                 </router-link>
@@ -134,6 +134,7 @@ import HeaderCart from "@/components/HeaderCart.vue";
 import Footer from "@/components/Footer.vue";
 const { proxy } = getCurrentInstance();
 import {useCartInfo} from "@/stores/cartInfo";
+import { getImageOptimized } from "@/composables/utils";
 
 const cartInfo = useCartInfo();
 // const $store = proxy.$store;
@@ -186,7 +187,7 @@ const priceProduct = computed(() => {
 
 function getImgUrl(url){
   if(!url) return ''
-  return $mainSite + url
+  return getImageOptimized(url) + '?width=80&height=80&format=webp'
 }
 
 function addToCart(product) {

@@ -111,6 +111,7 @@ import Image from "@/components/Image.vue";
 import { Autoplay, Navigation, Pagination, Thumbs } from 'swiper/modules';
 import AddItemInCart from "@/components/AddItemInCart.vue";
 import {useCartInfo} from "@/stores/cartInfo";
+import { getImageOptimized } from '@/composables/utils';
 
 const cartInfo = useCartInfo();
 
@@ -126,7 +127,7 @@ const { product } = toRefs(props);
 
 function srcImage(url){
   if(!url) return ''
-  return proxy.$mainSite + url
+  return getImageOptimized(url + '?width=390&height=390&format=webp')
 }
 
 const thumbsSwiper = ref(null);

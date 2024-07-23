@@ -50,6 +50,7 @@ import {useModal} from 'vue-final-modal';
 import ProductModal from "@/components/ProductModal.vue";
 import {useCartInfo} from "@/stores/cartInfo";
 import Image from "@/components/Image.vue";
+import { getImageOptimized } from '@/composables/utils';
 
 const cartInfo = useCartInfo();
 const { proxy } = getCurrentInstance();
@@ -99,13 +100,13 @@ function removeToCart() {
   cartInfo.removeItem(props.product.id);
 }
 
+
 const { product } = toRefs(props);
 const imgUrl = computed(() => {
   if (!product.value?.images && !product.value?.images?.length) {
     return ''
   }
-
-  return $mainSite + product.value?.images[0]?.url 
+  return getImageOptimized(product.value?.images[0]?.url) + '?width=278&height=278&format=webp'
 
 });
 
