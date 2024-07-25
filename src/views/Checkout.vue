@@ -39,11 +39,11 @@
             <!-- <span class="validation-text" v-if="!order.courier_delivery && !order.pickup" name="deliverytype">Необходимо выбрать способ доставки!</span> -->
             
             <div class="order-input__container">
-              <div v-if="order.delivery_rank == 0 || order.delivery_rank == null" @click="order.delivery_rank == 0 ? order.delivery_rank = null : order.delivery_rank = 0, validateInfo.delivery_rank = true" class="card-checkbox card-checkbox-pickup">
+              <div v-if="order.delivery_rank == 0 || order.delivery_rank == null" @click="setDeliveryType(0)" class="card-checkbox card-checkbox-pickup">
                 <input type="checkbox" :checked="order.delivery_rank == 0">
                 <span>Самовывоз</span>
               </div>
-              <div v-if="order.delivery_rank == 1 || order.delivery_rank == null" @click="order.delivery_rank == 1 ? order.delivery_rank = null : order.delivery_rank = 1, validateInfo.delivery_rank = true" class="card-checkbox card-checkbox-courier">
+              <div v-if="order.delivery_rank == 1 || order.delivery_rank == null" @click="setDeliveryType(1)" class="card-checkbox card-checkbox-courier">
                 <input type="checkbox" id="delivery_type-courier" :checked="order.delivery_rank == 1">
                 <span>Доставка курьером</span>
               </div>
@@ -51,7 +51,7 @@
               <div class="block-pickup" v-if="order.delivery_rank == 0">
                 <div
                     class="card-checkbox"
-                    v-for="(delivery, delivery_key) in deliveriesList"
+                    v-for="(delivery, delivery_key) in deliveriesList.filter(item => item.description == '0')"
                     :key="delivery_key"
                 >
                   <input type="radio" :id="`delivery-${delivery.id}`" :value="delivery.id" v-model="order.delivery" @change="deliveryPrice(order.delivery)">
@@ -68,7 +68,7 @@
                 <div class="block-courier-select" :class="order.address.checkout_reciever_address ? 'block-courier-case' : ''">
                   <div class="form-select2 ">
                     <select name="delivery" class="delivery-select select2" v-model="order.delivery" @change="deliveryPrice(order.delivery)">
-                      <option v-for="(delivery, delivery_key) in deliveriesList" :key="delivery_key" :value="delivery.id"> {{ delivery.name }} </option>
+                      <option v-for="(delivery, delivery_key) in deliveriesList.filter(item => item.description == '1')" :key="delivery_key" :value="delivery.id"> {{ delivery.name }} </option>
                     </select>
                   </div>
 
@@ -462,12 +462,27 @@ const discountProducts = computed(() => {
   return discount
 });
 
+const setDeliveryType = (type) => {
+  if (order.delivery_rank == type) order.delivery_rank = null
+  else {
+    order.delivery_rank = type
+    if (order.delivery && deliveriesList.value.find(item => item.id == order.delivery).description != type) {
+      order.delivery = deliveriesList.value.find(item => item.description == type).id
+    }
+    validateInfo.value.delivery_rank = true
+  }
+}
+
 async function getDeliveriesList() {
   let responseDeliveries = await apiClient.get('/deliveries-list');
   deliveriesList.value = responseDeliveries.data.deliveries
 
-  order.delivery = deliveriesList.value[0].id
-  order.delivery_cost = Number(deliveriesList.value[0].price)
+  let firstPickupDelivery = deliveriesList.value.find(item => item.description == '0')
+  if (firstPickupDelivery) {
+    order.delivery = firstPickupDelivery.id
+    order.delivery_rank = '0'
+    order.delivery_cost = Number(firstPickupDelivery.price)
+  }
 }
 
 async function getPaymentsList() {
