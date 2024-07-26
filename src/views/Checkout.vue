@@ -174,7 +174,7 @@
               >
                 <label class="col-form-label payment">
                   <input type="radio" name="payment" v-model="order.payment" :value="payment.id">
-                  <Image :src="$mainSite + payment.logo" :alt="payment.name" :title="payment.name" class="mw-100"/>
+                  <Image :src="getImageOptimized(payment.logo)" :alt="payment.name" :title="payment.name" class="mw-100"/>
                   <span>{{ payment.name }}</span>
                 </label>
               </div>
