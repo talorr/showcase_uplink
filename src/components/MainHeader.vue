@@ -36,21 +36,24 @@
 
 <script setup>
 
-import { getCurrentInstance, computed } from 'vue';
+import { computed } from 'vue';
+import {useCartInfo} from "@/stores/cartInfo";
+import {useSiteInfo} from "@/stores/siteInfo";
 
-const { proxy } = getCurrentInstance();
-const $store = proxy.$store;
-const $mainSite = proxy.$mainSite;
-const siteLogo = computed(() => $store.siteInfo.siteInfo.logo ? $mainSite + $store.siteInfo.siteInfo.logo : null);
-const showCart = computed(() => $store.cartInfo.cart.length > 0);
+const cartInfo = useCartInfo();
+const siteInfo = useSiteInfo();
+
+const siteLogo = computed(() => siteInfo.siteInfo.logo ? import.meta.env.VITE_MAIN_SITE + siteInfo.siteInfo.logo : null);
+const showCart = computed(() => cartInfo.cart.length > 0);
 
 const sklonenie = (number, txt) => {
     let cases = [2, 0, 1, 1, 1, 2];
     return txt[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 }
+
 const countProduct = computed(() => {
   let count = null;
-  $store.cartInfo.cart.forEach((product) => {
+  cartInfo.cart.forEach((product) => {
     count += product.quantity
   })
   return count
@@ -58,7 +61,7 @@ const countProduct = computed(() => {
 
 const priceProduct = computed(() => {
   let price = null;
-  $store.cartInfo.cart.forEach((product) => {
+  cartInfo.cart.forEach((product) => {
     price += product.quantity * product.price
   })
   

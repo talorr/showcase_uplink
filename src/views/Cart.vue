@@ -129,16 +129,13 @@ import { useMeta } from "vue-meta";
 useMeta({
   title: "Корзина",
 })
-import {ref, reactive, onMounted, watch, computed, getCurrentInstance} from 'vue';
+import { computed } from 'vue';
 import HeaderCart from "@/components/HeaderCart.vue";
 import Footer from "@/components/Footer.vue";
-const { proxy } = getCurrentInstance();
 import {useCartInfo} from "@/stores/cartInfo";
 import { getImageOptimized } from "@/composables/utils";
 
 const cartInfo = useCartInfo();
-// const $store = proxy.$store;
-const $mainSite = proxy.$mainSite;
 
 const getFormattedProductPrice = (price) => {
   return new Intl.NumberFormat('ru-RU').format(Number(price))
@@ -166,6 +163,7 @@ const discountPercent = computed(() => {
   })
   return Math.round(discount)
 })
+
 const discountCost = computed(() => {
   let discount = 0;
   cartInfo.cart.forEach((product) => {
@@ -176,6 +174,7 @@ const discountCost = computed(() => {
   })
   return discount
 })
+
 const priceProduct = computed(() => {
   let price = 0;
   cartInfo.cart.forEach((product) => {
@@ -201,6 +200,7 @@ function removeFromCart(productId) {
 function removeItemInCart(productId) {
   cartInfo.removeItemInCart(productId);
 }
+
 const sklonenie = (number, txt) => {
     let cases = [2, 0, 1, 1, 1, 2];
     return txt[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];

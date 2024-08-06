@@ -52,11 +52,11 @@
 </template>
 
 <script setup>
-
+import {useSiteInfo} from "@/stores/siteInfo";
 import BannerFooter from "./BannerFooter.vue";
-import { getCurrentInstance, computed } from 'vue';
-const { proxy } = getCurrentInstance();
+import { computed } from 'vue';
 
-const siteInfo = computed(() => proxy.$store.siteInfo.siteInfo);
+const siteInfoStore = useSiteInfo();
+const siteInfo = computed(() => siteInfoStore.siteInfo);
 
 </script>

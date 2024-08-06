@@ -16,32 +16,32 @@
 
 <script setup>
 
-import { getCurrentInstance, computed } from 'vue';
+import { computed } from 'vue';
+import {useCartInfo} from "@/stores/cartInfo";
 
-const { proxy } = getCurrentInstance();
-const $store = proxy.$store;
-const $mainSite = proxy.$mainSite;
-const showCart = computed(() => $store.cartInfo.cart.length > 0);
+const cartInfo = useCartInfo();
 
 const countProduct = computed(() => {
   let count = null;
-  $store.cartInfo.cart.forEach((product) => {
+  cartInfo.cart.forEach((product) => {
     count += product.quantity
   })
   return count
 });
+
 const discountCost = computed(() => {
   let discount = 0
-  $store.cartInfo.cart.forEach((product) => {
+  cartInfo.cart.forEach((product) => {
     if(product.old_price > 0){
       discount += (product.old_price - product.price) * product.quantity
     }
   })
   return discount
 })
+
 const priceProduct = computed(() => {
   let price = null;
-  $store.cartInfo.cart.forEach((product) => {
+  cartInfo.cart.forEach((product) => {
     price += product.quantity * product.price
   })
   

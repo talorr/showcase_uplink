@@ -277,10 +277,9 @@ import { useMeta } from "vue-meta";
 useMeta({
   title: "Оформление заказа",
 })
-import {ref, reactive, onMounted, watch, computed, getCurrentInstance,watchEffect} from 'vue';
+import {ref, reactive, onMounted, watch, computed, watchEffect} from 'vue';
 import HeaderCheckout from "@/components/HeaderCheckout.vue";
 import Footer from "@/components/Footer.vue";
-const { proxy } = getCurrentInstance();
 import {useCartInfo} from "@/stores/cartInfo";
 import apiClient from "@/axios.js";
 import VueDatePicker from '@vuepic/vue-datepicker';
@@ -288,7 +287,6 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { getImageOptimized } from "@/composables/utils";
 
 const cartInfo = useCartInfo();
-const $mainSite = proxy.$mainSite;
 
 const getCurrentPaymentName = (id) => {
   if(!id) return '-'
@@ -479,9 +477,12 @@ async function getDeliveriesList() {
 
   let firstPickupDelivery = deliveriesList.value.find(item => item.description == '0')
   if (firstPickupDelivery) {
+    // console.log(firstPickupDelivery)
     order.delivery = firstPickupDelivery.id
     order.delivery_rank = '0'
-    order.delivery_cost = Number(firstPickupDelivery.price)
+    // order.delivery_cost = Number(firstPickupDelivery.price)
+    // console.log(order.delivery_cost)
+    deliveryPrice(order.delivery)
   }
 }
 
@@ -521,7 +522,7 @@ function deliveryPrice(deliveryId) {
   let delivery = deliveriesList.value.find(elem => elem.id == deliveryId)
   if (delivery.price.includes('%')) {
     let percentage = Number(delivery.price.replace('%', ''))
-    order.delivery_cost = Math.round((order.cost / 100) * percentage * 100 ) / 100
+    order.delivery_cost = Math.round(((order.cart_cost - order.discount_cost) / 100) * percentage * 100 ) / 100
   }
   else {
     order.delivery_cost = Number(delivery.price)

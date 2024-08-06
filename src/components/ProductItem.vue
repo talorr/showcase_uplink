@@ -44,7 +44,7 @@
 
 <script setup>
 
-import { computed, getCurrentInstance, toRefs } from 'vue';
+import { computed, toRefs } from 'vue';
 import IconCart from "@/components/icons/IconCart.vue";
 import {useModal} from 'vue-final-modal';
 import ProductModal from "@/components/ProductModal.vue";
@@ -53,10 +53,6 @@ import Image from "@/components/Image.vue";
 import { getImageOptimized } from '@/composables/utils';
 
 const cartInfo = useCartInfo();
-const { proxy } = getCurrentInstance();
-const $mainSite = proxy.$mainSite;
-const $store = proxy.$store;
-
 
 const getFormattedProductPrice = (price) => {
   return new Intl.NumberFormat('ru-RU').format(price)
@@ -111,13 +107,11 @@ const imgUrl = computed(() => {
 });
 
 const countProduct = computed(() => {
-  let existingProduct = $store.cartInfo.cart.find(item => item.id === props.product.id);
+  let existingProduct = cartInfo.cart.find(item => item.id === props.product.id);
   if (existingProduct){
     return existingProduct.quantity
   }
   return 0
 });
-
-
 
 </script>

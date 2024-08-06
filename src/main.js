@@ -4,7 +4,6 @@ import { createVfm } from 'vue-final-modal'
 
 import App from './App.vue';
 import { useSiteInfo } from './stores/siteInfo';
-import { useCartInfo } from './stores/cartInfo';
 import router from './router'
 
 import 'vue-final-modal/style.css'
@@ -21,11 +20,5 @@ app.use(pinia);
 app.use(router)
 app.use(vfm)
 
-useSiteInfo().getSiteSettings().then(() => {
-    app.config.globalProperties.$store = {
-        siteInfo: useSiteInfo(),
-        cartInfo: useCartInfo()
-    }
-    app.config.globalProperties.$mainSite = import.meta.env.VITE_MAIN_SITE
-    app.mount('#app');
-});
+useSiteInfo().getSiteSettings()
+app.mount('#app');
