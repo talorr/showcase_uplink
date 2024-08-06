@@ -384,15 +384,9 @@ const requestPayment = async (orderId) => {
 
   try {
     const payload = {
-      catchUrl:
-        //import.meta.env.VITE_API_BASE_URL +
-        'http://localhost:3002/api/catch-yookassa-order-payment',
-        //"/api/catch-yookassa-order-payment",
       orderId: orderId,
     };
-
-    const response = await axios.post("http://localhost:3002/api/create-order-payment", payload);
-      console.log(response);
+    const response = await apiClient.post(import.meta.env.VITE_API_BASE_URL + "/create-order-payment", payload);
     if (response.data.payment.confirmation.confirmation_url) {
       window
         .open(response.data.payment.confirmation.confirmation_url, "_blank")
@@ -646,8 +640,13 @@ async function makeOrder() {
 
   try {
     let { data: responseMakeOrder } = await apiClient.post('/create-order', { order: obj });
+    
+    if (paymentsList.value.length && window.location.hostname == 'showcase-test2.uplinkweb.ru') {
+      console.log('letss go')
+      const payment = paymentsList.value.find(item => item.id == obj.payment)
+      if (payment && payment.class == 'mspYooKassaPaymentHandler') await requestPayment(responseMakeOrder.orderId)
+    }
 
-    //await requestPayment(responseMakeOrder.orderId)
     cartInfo.clearCart()
     orderCreated.value = true
     justCreatedOrder.value = (await apiClient.get('/order?id=' + responseMakeOrder.orderId)).data.order;
