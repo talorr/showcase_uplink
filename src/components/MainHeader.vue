@@ -3,7 +3,7 @@
     <div class="container">
 
       <RouterLink to="/">
-        <img class="logo" :src="`${siteLogo}`" alt="logo">
+        <img class="logo" v-if="siteLogo" :src="`${siteLogo}`" alt="logo">
       </RouterLink>
 
       <div class="cart">
@@ -41,7 +41,7 @@ import { getCurrentInstance, computed } from 'vue';
 const { proxy } = getCurrentInstance();
 const $store = proxy.$store;
 const $mainSite = proxy.$mainSite;
-const siteLogo = computed(() => $mainSite + $store.siteInfo.siteInfo.logo);
+const siteLogo = computed(() => $store.siteInfo.siteInfo.logo ? $mainSite + $store.siteInfo.siteInfo.logo : null);
 const showCart = computed(() => $store.cartInfo.cart.length > 0);
 
 const sklonenie = (number, txt) => {
