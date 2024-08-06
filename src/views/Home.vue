@@ -82,6 +82,14 @@ let filter = ref({
     sortby: "rank",
     dir: "asc"
   },
+  selectedStatus: {
+    title: 'Все товары',
+    name: 'all',
+    count: 0,
+    condition: {
+      'content.deleted': 0
+    }
+  },
   limit: 28,
   offset: 0,
   needComposition: 1
@@ -95,10 +103,10 @@ let getCountProducts = async () => {
 let getProducts = async (page) => {
   let refFilter = {...filter.value}
   refFilter.sortBy = JSON.stringify(filter.value.sortBy)
+  refFilter.selectedStatus = JSON.stringify(filter.value.selectedStatus)
   // refFilter.limit = filter.value.limit
   refFilter.offset = page * filter.value.limit
   filter.value.offset = refFilter.offset
-
   let response = await apiClient.get(`/products?${new URLSearchParams(refFilter)}`);
   products.value = response.data.products;
   currentPage.value = page;
