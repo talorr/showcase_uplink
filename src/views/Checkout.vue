@@ -637,7 +637,7 @@ async function makeOrder() {
   try {
     let { data: responseMakeOrder } = await apiClient.post('/create-order', { order: obj });
 
-    if (paymentsList.value.length && window.location.hostname == 'showcase-test2.uplinkweb.ru') {
+    if (paymentsList.value.length && window.location.hostname == 'showcase-test2.floria-shop.ru') {
       console.log('letss go')
       const payment = paymentsList.value.find(item => item.id == obj.payment)
       if (payment && payment.class == 'mspYooKassaPaymentHandler') await requestPayment(responseMakeOrder.orderId)
