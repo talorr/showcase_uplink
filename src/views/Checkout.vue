@@ -199,12 +199,12 @@
                   <span class="ms2_order_delivery_cost">{{ order.delivery_cost }}</span> ₽
                 </div>
               </div>
-              <div class="total_count-case">
+              <!-- <div class="total_count-case">
                 <div>Скидка</div>
                 <div>
                   <span class="">{{ order?.discount_cost ? order.discount_cost : 0 }}</span> ₽
                 </div>
-              </div>
+              </div> -->
             </div>
 
             <div class="total_cost text-nowrap">
@@ -444,16 +444,6 @@ const priceProducts = computed(() => {
   return price
 });
 
-const discountProducts = computed(() => {
-  let discount = 0;
-  cartInfo.cart.forEach((product) => {
-    if (product.old_price){
-      discount += product.old_price - product.price
-    }
-  })
-  return discount
-});
-
 const setDeliveryType = (type) => {
   if (order.delivery_rank == type) order.delivery_rank = null
   else {
@@ -503,7 +493,7 @@ function init() {
 
   order.products = cartInfo.cart
   order.cart_cost = priceProducts
-  order.discount_cost = discountProducts
+  // order.discount_cost = discountProducts
   order.delivery_date = new Date()
 
 }
@@ -512,11 +502,17 @@ const initDeliverytime = (interval) => {
   order.delivery_time = interval?.value
 }
 
+const discountProducts = computed(() => {
+  let discount = 0;
+  if (order.delivery_cost < 0) discount = order.delivery_cost
+  return discount
+});
+
 function deliveryPrice(deliveryId) {
   let delivery = deliveriesList.value.find(elem => elem.id == deliveryId)
   if (delivery.price.includes('%')) {
     let percentage = Number(delivery.price.replace('%', ''))
-    order.delivery_cost = Math.round(((order.cart_cost - order.discount_cost) / 100) * percentage * 100 ) / 100
+    order.delivery_cost = Math.round(((order.cart_cost) / 100) * percentage * 100 ) / 100
   }
   else {
     order.delivery_cost = Number(delivery.price)
@@ -640,7 +636,7 @@ async function makeOrder() {
 
   try {
     let { data: responseMakeOrder } = await apiClient.post('/create-order', { order: obj });
-    
+
     if (paymentsList.value.length && window.location.hostname == 'showcase-test2.uplinkweb.ru') {
       console.log('letss go')
       const payment = paymentsList.value.find(item => item.id == obj.payment)
@@ -694,7 +690,7 @@ onMounted(() => {
 });
 
 watch(() => order, () => {
-  order.cost = order.cart_cost + order.delivery_cost - order.discount_cost
+  order.cost = order.cart_cost + order.delivery_cost
 }, { deep: true });
 </script>
 
