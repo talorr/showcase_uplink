@@ -21,6 +21,5 @@ app.use(router)
 app.use(vfm)
 
 useSiteInfo().getSiteSettings().then((tariff_expired) => {
-  console.log(tariff_expired)
-  app.mount('#app');
+  if (!tariff_expired) app.mount('#app');
 })
