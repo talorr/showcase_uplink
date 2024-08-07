@@ -13,6 +13,8 @@ export const useSiteInfo = defineStore('siteInfo', {
                     this.siteInfo[elem.key] = elem.value
                 })
             })
+
+            return response.data.tariff_expired
         }
     }
 });

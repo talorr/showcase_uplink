@@ -20,5 +20,7 @@ app.use(pinia);
 app.use(router)
 app.use(vfm)
 
-useSiteInfo().getSiteSettings()
-app.mount('#app');
+useSiteInfo().getSiteSettings().then((tariff_expired) => {
+  console.log(tariff_expired)
+  app.mount('#app');
+})
