@@ -106,6 +106,8 @@ let getProducts = async (page) => {
   refFilter.selectedStatus = JSON.stringify(filter.value.selectedStatus)
   // refFilter.limit = filter.value.limit
   refFilter.offset = page * filter.value.limit
+  refFilter.publishedOnly = 1
+  
   filter.value.offset = refFilter.offset
   let response = await apiClient.get(`/products?${new URLSearchParams(refFilter)}`);
   products.value = response.data.products;
