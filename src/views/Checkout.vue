@@ -628,7 +628,7 @@ async function makeOrder() {
     "delivery_rank": newOrder.delivery_rank,
     "is_cost_change_number": 0,
     "payment": newOrder.payment,
-    "payment_status": 1,
+    "payment_status": 0,
     "properties": "{\"cf.from_city\":\"1\"}",
     "source": "Корзина",
     "status": 1,
