@@ -3,7 +3,8 @@ import apiClient from '../axios.js';
 
 export const useSiteInfo = defineStore('siteInfo', {
     state: () => ({
-        siteInfo: {}
+        siteInfo: {},
+        yookassaConnected: false
     }),
     actions: {
         async getSiteSettings() {
@@ -13,6 +14,8 @@ export const useSiteInfo = defineStore('siteInfo', {
                     this.siteInfo[elem.key] = elem.value
                 })
             })
+
+            this.yookassaConnected = response.data.yookassaConnected
 
             return response.data.tariff_expired
         }

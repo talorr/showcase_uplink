@@ -285,8 +285,10 @@ import apiClient from "@/axios.js";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { getImageOptimized } from "@/composables/utils";
+import {useSiteInfo} from "@/stores/siteInfo";
 
 const cartInfo = useCartInfo();
+const siteInfo = useSiteInfo();
 
 const getCurrentPaymentName = (id) => {
   if(!id) return '-'
@@ -637,8 +639,7 @@ async function makeOrder() {
   try {
     let { data: responseMakeOrder } = await apiClient.post('/create-order', { order: obj });
 
-    if (paymentsList.value.length && window.location.hostname == 'showcase-test2.floria-shop.ru') {
-      console.log('letss go')
+    if (paymentsList.value.length && siteInfo.yookassaConnected) {
       const payment = paymentsList.value.find(item => item.id == obj.payment)
       if (payment && payment.class == 'mspYooKassaPaymentHandler') await requestPayment(responseMakeOrder.orderId)
     }
