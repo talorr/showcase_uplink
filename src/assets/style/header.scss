@@ -70,6 +70,8 @@ header {
       img {
         height: inherit;
         max-height: 78px;
+        max-width: 250px;
+        object-fit: contain;
 
         @media (max-width: 768px) {
           max-height: none;
