@@ -245,7 +245,7 @@
         </div>
         
         <div class="success-header">Информация о доставке</div>
-        <p v-show="justCreatedOrder?.address?.courier_delivery === 'on'">Способ доставки: <span>Балтийская 120</span></p>
+        <p v-show="justCreatedOrder?.address?.courier_delivery">Способ доставки: <span>Балтийская 120</span></p>
         <p>Способ оплаты: <span>{{getCurrentPaymentName(justCreatedOrder.payment)}}</span></p>
          
         <p v-show="order.address.receiver_name">Имя получателя: <span>{{ order.address.receiver_name }}</span></p>
@@ -593,7 +593,7 @@ async function makeOrder() {
       "checkout_text_card": '',
       "city": '',
       "comment": newOrder.comment,
-      "courier_delivery": newOrder.courier_delivery ? "on" : "off",
+      "courier_delivery": newOrder.courier_delivery ? true : false,
       "delivery_date": deliveryDateFormat(newOrder.delivery_date),
       'delivery_new_date': deliveryDateFormat(newOrder.delivery_date),
       "delivery_time": extractTime(newOrder?.delivery_time),
