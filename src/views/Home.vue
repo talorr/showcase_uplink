@@ -87,7 +87,7 @@ let filter = ref({
     name: 'all',
     count: 0,
     condition: {
-      'content.deleted': 0
+      '$content.deleted$': 0
     }
   },
   limit: 28,
