@@ -479,7 +479,7 @@ async function getPaymentsList() {
 
 async function getIntervals() {
   let responseIntervals = await apiClient.get('/intervals');
-  deliveryIntervals.value = responseIntervals.data.intervals.options.split(",")
+  if (responseIntervals.data.intervals) deliveryIntervals.value = responseIntervals.data.intervals?.options?.split(",")
 }
 
 
