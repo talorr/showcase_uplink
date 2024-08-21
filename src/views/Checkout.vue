@@ -549,6 +549,7 @@ const deliveryDateFormat = (dateString) => {
 } 
 
 function extractTime(dateString) {
+  if (!dateString) return ''
   const date = dateString.split('-')
 
   const startDate = date[0].split(':')[0]
