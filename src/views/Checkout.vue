@@ -474,7 +474,7 @@ async function getDeliveriesList() {
 
 async function getPaymentsList() {
   let responsePayments = await apiClient.get('/payments-list');
-  paymentsList.value = responsePayments.data.payments
+  paymentsList.value = responsePayments.data.payments.filter(item => item.active)
 }
 
 async function getIntervals() {
