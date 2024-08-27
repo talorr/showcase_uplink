@@ -16,8 +16,8 @@ export const useSiteInfo = defineStore('siteInfo', {
             })
 
             this.yookassaConnected = response.data.yookassaConnected
-
-            return response.data.tariff_expired
+            this.siteInfo.tariff_expired = response.data.tariff_expired
+            return this.siteInfo
         }
     }
 });

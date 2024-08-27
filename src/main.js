@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { createVfm } from 'vue-final-modal'
-
+import { loadScript, createMetrika, startTracking } from './yandex-metrika/helpers'
 import App from './App.vue';
 import { useSiteInfo } from './stores/siteInfo';
 import router from './router'
@@ -20,6 +20,12 @@ app.use(pinia);
 app.use(router)
 app.use(vfm)
 
-useSiteInfo().getSiteSettings().then((tariff_expired) => {
-  if (!tariff_expired) app.mount('#app');
+useSiteInfo().getSiteSettings().then((siteInfo) => {
+  if (siteInfo.metrika) {
+    loadScript(() => {
+      const metrika = createMetrika(app) 
+      startTracking(metrika, router) 
+    }, siteInfo.metrika)
+  }
+  if (!siteInfo.tariff_expired) app.mount('#app');
 })
