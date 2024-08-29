@@ -37,13 +37,26 @@ footer{
   }
 }
 
-.footer__contacts,
+
 .footer__policy{
   display: flex;
   gap: 15px;
   flex-direction: column;
 }
 
+.footer__contacts {
+  display: flex;
+  @media (max-width: 550px) {
+    flex-direction: column;
+    gap: 30px;
+  }
+  gap: 50px;
+  .footer__contacts-column{
+    display: flex;
+    gap: 15px;
+    flex-direction: column; 
+  }
+}
 @media (max-width: 1024px) {
 
   footer .footer__banner-text{

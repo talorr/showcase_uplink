@@ -17,6 +17,7 @@
 }
 
 @media (max-width: 550px) {
+    
     .header-margin {
         margin-top: 90px !important;
     }
@@ -346,7 +347,7 @@ header {
     }
 
     header .container {
-        height: 70px !important;
+        // height: 70px !important;
 
         a img {
             height: 60px;
@@ -374,6 +375,9 @@ header {
 }
 
 @media (min-width: 551px) {
+    .mobile-only {
+        display: none !important;
+    }
     .product-card-overlay-mobile {
         display: none !important;
     }
@@ -386,7 +390,7 @@ header {
 
     .footer__info {
         flex-direction: column;
-        gap: 15px;
+        gap: 30px;
     }
 
     .product-card__info {
@@ -448,7 +452,7 @@ header {
 
     header {
         div {
-            height: 100px;
+            // height: 100px;
         }
 
         .container a img.logo {
@@ -478,7 +482,7 @@ header {
     }
 
     .footer__policy {
-        padding-left: 34px;
+        // padding-left: 34px;
         width: 100%;
     }
 }
