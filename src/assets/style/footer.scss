@@ -34,9 +34,23 @@ footer{
     gap: 10px;
     text-decoration:none;
     color: black;
+    svg {
+      min-width: 24px;
+    }
   }
 }
+.address{
+  max-width: 260px;
+  align-items: flex-start !important;
 
+  span {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
 
 .footer__policy{
   display: flex;
