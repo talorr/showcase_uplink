@@ -21,7 +21,7 @@ app.use(router)
 app.use(vfm)
 
 useSiteInfo().getSiteSettings().then((siteInfo) => {
-  if (siteInfo.metrika) {
+  if (siteInfo?.metrika) {
     loadScript(() => {
       const metrika = createMetrika(app) 
       startTracking(metrika, router) 
