@@ -90,6 +90,5 @@ const orgName = computed(() => siteInfoStore.siteInfo.organization_name);
 
 onMounted(() => {
     // init();
-    console.log(siteInfoStore.siteInfo); 
 });
 </script>
