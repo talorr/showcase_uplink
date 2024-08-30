@@ -7,8 +7,8 @@
       <!-- <p><span >Доставка цветов осуществляется в городе </span>{{ siteInfoStore.siteInfo.city }}<span >.</span></p> -->
       <p><span >Стоимость доставки:</span></p>
       <ul>
-        <li v-for="delivery in deliveriesList" :key="delivery.id" >
-          {{ deliveryType(delivery)}}{{ delivery.name }}<span > - </span>{{ delivery.price }} <span >₽;</span>
+        <li v-for="delivery in deliveriesList.filter(item => item.description == '1')" :key="delivery.id" >
+          {{ delivery.name }}<span > - </span>{{ delivery.price }} <span >₽;</span>
         </li>
       </ul>
       <p><span >Если у вас остались вопросы, свяжитесь с нашими менеджерами по телефону </span>
@@ -40,9 +40,7 @@ import { ref, onMounted, computed } from 'vue';
 import MainHeader from "../components/MainHeader.vue";
 import Footer from "@/components/Footer.vue";
 import apiClient from "../axios";
-const deliveryType = (delivery) => { 
-   return delivery.description === '0' ? "Самовывоз " : (delivery.name.includes("Доставка") || delivery.name.includes("доставка")) ? "" : "Доставка "
-} 
+
 async function getDeliveriesList() {
   let responseDeliveries = await apiClient.get('/deliveries-list');
   deliveriesList.value = responseDeliveries.data.deliveries
