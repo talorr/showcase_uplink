@@ -1,7 +1,7 @@
 <template>
   <header>
     <div class="container">
-      <div class="header__info">
+      <div v-if="false" class="header__info">
         <div class="header__info-worktime">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M10 1C5.02991 1 1 5.02991 1 10C1 14.9701 5.02991 19 10 19C14.9701 19 19 14.9701 19 10C19 5.02991 14.9701 1 10 1ZM10 17.4732C5.87366 17.4732 2.52679 14.1263 2.52679 10C2.52679 5.87366 5.87366 2.52679 10 2.52679C14.1263 2.52679 17.4732 5.87366 17.4732 10C17.4732 14.1263 14.1263 17.4732 10 17.4732Z" fill="black"/>
@@ -31,17 +31,17 @@
       <RouterLink class="header__logo" to="/">
         <img class="logo" v-if="siteLogo" :src="`${siteLogo}`" alt="logo">
       </RouterLink>
-
-      <div class="header__cart-contacts">
+      <div></div>
+      <div v-if="false" class="header__cart-contacts">
         <div class="mobile-only">
           Доставка цветов
         <br class="mobile-only">
         <span class="mobile-only">В Томске</span>
         </div>
 
-        <a class="header__contacts" :href="`tel:${phoneToCall}`">
+        <!-- <a class="header__contacts" :href="`tel:${phoneToCall}`">
           {{ phone }}
-        </a>
+        </a> -->
         <div class="cart">
           <router-link v-if="showCart" to="/cart" class="not_empty">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
