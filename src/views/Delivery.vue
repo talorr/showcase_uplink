@@ -4,7 +4,7 @@
   <div class="header-margin container info">
     <h1> Условия доставки </h1>
     <div>
-      <p><span >Доставка цветов осуществляется в городе </span>{{ siteInfoStore.siteInfo.city }}<span >.</span></p>
+      <!-- <p><span >Доставка цветов осуществляется в городе </span>{{ siteInfoStore.siteInfo.city }}<span >.</span></p> -->
       <p><span >Стоимость доставки:</span></p>
       <ul>
         <li v-for="delivery in deliveriesList" :key="delivery.id" >
@@ -17,6 +17,11 @@
         </a>
         .
       </p>
+      <template v-if="data.value">
+        <h2>Дополнительная информация</h2>
+        <div v-html="data.value">
+        </div>
+      </template>
 
     </div>
   </div>
@@ -48,7 +53,7 @@ let data = ref({});
 
 const init = async () => {
   let response = await apiClient.get('/showcase-params');
-  data.value = response.data.settings.terms;
+  data.value = response.data.sttings.terms;
 };
 
 onMounted(() => {
