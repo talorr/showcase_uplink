@@ -4,7 +4,7 @@ import apiClient from '../axios.js';
 export const useSiteInfo = defineStore('siteInfo', {
     state: () => ({
         siteInfo: {},
-        yookassaConnected: false
+        yookassaConnected: false,
     }),
     actions: {
         async getSiteSettings() {
