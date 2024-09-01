@@ -32,8 +32,8 @@
         <img class="logo" v-if="siteLogo" :src="`${siteLogo}`" alt="logo">
       </RouterLink>
       <div></div>
-      <div v-if="false" class="header__cart-contacts">
-        <div class="mobile-only">
+      <div class="header__cart-contacts">
+        <div v-if="false" class="mobile-only">
           Доставка цветов
         <br class="mobile-only">
         <span class="mobile-only">В Томске</span>
