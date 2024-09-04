@@ -17,6 +17,10 @@ header {
     width: 100%;
     justify-content: center;
     align-items: center;
+
+    @media (max-width: 550px) {
+      justify-content: start; 
+    }
   }
 
   .header__info {
