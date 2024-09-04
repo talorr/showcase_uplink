@@ -3,6 +3,8 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
+const hash = Math.floor(Date.now() / 1000);
+
 export default defineConfig({
   // base: '/',
   plugins: [
@@ -14,9 +16,9 @@ export default defineConfig({
     minify: 'esbuild',
     rollupOptions: {
       output: {
-        entryFileNames: `[name]` + `.js`,
-        chunkFileNames: `[name]` + `.js`,
-        assetFileNames: `[name]` + `.[ext]`,
+        entryFileNames: `[name]` + hash + `.js`,
+        chunkFileNames: `[name]` + hash + `.js`,
+        assetFileNames: `[name]` + hash + `.[ext]`,
         manualChunks(id) {
             if (id.includes('node_modules')) {
               return id.toString().split('node_modules/')[1].split('/')[0].toString();
