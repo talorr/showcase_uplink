@@ -17,9 +17,9 @@
         </a>
         .
       </p>
-      <template v-if="data.value">
+      <template v-if="data">
         <h2>Дополнительная информация</h2>
-        <div v-html="data.value.content">
+        <div v-html="data.content">
         </div>
       </template>
 
@@ -46,8 +46,8 @@ async function getDeliveriesList() {
   deliveriesList.value = responseDeliveries.data.deliveries
 }
 const phoneToCall = computed(() => siteInfoStore.siteInfo.phone[0] == 8 ? '+7' + siteInfoStore.siteInfo.phone.slice(1) : siteInfoStore.siteInfo.phone);
-let deliveriesList = ref([]);
-let data = ref({});
+const deliveriesList = ref([]);
+const data = ref(null);
 
 const init = async () => {
   let response = await apiClient.get('/showcase-params');
