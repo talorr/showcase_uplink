@@ -7,7 +7,7 @@
       <!-- <p><span >Доставка цветов осуществляется в городе </span>{{ siteInfoStore.siteInfo.city }}<span >.</span></p> -->
       <p><span >Стоимость доставки:</span></p>
       <ul>
-        <li v-for="delivery in deliveriesList.filter(item => item.description == '1')" :key="delivery.id" >
+        <li v-for="delivery in deliveriesList.filter(item => item.description == '1' && item.active)" :key="delivery.id" >
           {{ delivery.name }}<span > - </span>{{ delivery.price }} <span >₽;</span>
         </li>
       </ul>
@@ -46,12 +46,12 @@ async function getDeliveriesList() {
   deliveriesList.value = responseDeliveries.data.deliveries
 }
 const phoneToCall = computed(() => siteInfoStore.siteInfo.phone[0] == 8 ? '+7' + siteInfoStore.siteInfo.phone.slice(1) : siteInfoStore.siteInfo.phone);
-let deliveriesList = ref({});
+let deliveriesList = ref([]);
 let data = ref({});
 
 const init = async () => {
   let response = await apiClient.get('/showcase-params');
-  data.value = response.data.sttings.terms;
+  data.value = response.data.settings.terms;
 };
 
 onMounted(() => {

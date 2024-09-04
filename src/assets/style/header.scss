@@ -5,58 +5,73 @@ header {
   left: 0;
   width: calc(100vw - 17px);
   z-index: 3;
-  display:flex;
+  display: flex;
+  align-items:center;
+  flex-direction: column;
+
   @media (max-width: 540px) {
     height: 85px;
   }
-  align-items:center;
-  flex-direction: column;
+
   .header__logo {
     width: 100%;
     justify-content: center;
     align-items: center;
   }
-  .header__info{
-    @media (max-width: 550px) {
-      display: none;
-    }
+
+  .header__info {
     display: flex;
     gap: 30px;
     flex-direction: column;
-    &-worktime,&-cityname{
+
+    @media (max-width: 550px) {
+      display: none;
+    }
+
+    &-worktime,
+    &-cityname {
       display: flex;
       gap: 10px;
-      div{
+
+      div {
         font-size: 16px;
-        color:rgba(0,0,0,0.5);
-        span{
-          color:black;
+        color: rgba(0, 0, 0, 0.5);
+
+        span {
+          color: black;
         }
       }
     }
   }
+
   @media (max-width: 1024px) {
     width: 100%;
   }
+
   .header__cart-contacts {
     display: flex;
     align-items: flex-end;
     gap: 10px;
     flex-direction: column;
+
     @media (max-width: 550px) {
       gap: 4px;
+
       div {
         text-align: end;
-        color: rgba(0,0,0,0.5);
+        color: rgba(0, 0, 0, 0.5);
+
         span {
-          color:black;
+          color: black;
         }
       }
     }
-    .header__contacts{
+
+    .header__contacts {
       text-decoration: none;
       font-size: 20px;
       color: black;
+
       @media (max-width: 550px) {
         font-size: 14px;
         // text-decoration: underline;
@@ -64,6 +79,7 @@ header {
       }
     }
   }
+
   .container {
     background: white;
 
@@ -109,18 +125,19 @@ header {
     // justify-content: space-between;
     display: grid;
     grid-template-columns: repeat(3, minmax(50px, 1fr));
+    align-items: center;
+
     @media (max-width: 550px) {
       grid-template-columns: repeat(2, minmax(50px, 1fr));
       height: 85px;
     }
-    align-items: center;
-    // align-items: center;
 
     a {
       display: flex;
       align-items: center;
       max-height: 78px;
       height: 90%;
+
       @media (max-width: 550px) {
         height: unset;
       }
