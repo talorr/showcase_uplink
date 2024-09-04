@@ -19,7 +19,7 @@
       </p>
       <template v-if="data.value">
         <h2>Дополнительная информация</h2>
-        <div v-html="data.value">
+        <div v-html="data.value.content">
         </div>
       </template>
 
