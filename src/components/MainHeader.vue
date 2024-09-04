@@ -10,7 +10,7 @@
           <div>
             Время работы
             <span>
-              с 10:00 до 21:00
+              {{ siteInfo?.siteInfo?.opening_hours }}
             </span>
           </div>  
         </div>
@@ -23,7 +23,7 @@
           <div>
             Доставка цветов в городе
             <span>
-              Томск
+              {{ siteInfo?.siteInfo?.city }}
             </span>
           </div>  
         </div>
