@@ -1,6 +1,6 @@
 <template>
   <metainfo>
-    <template v-slot:title="{ content }">{{ content ? `${content}` : siteName }}</template>
+    <template v-slot:title="{ content }">{{ content ? `${content} ${siteName}` : 'Цветочная онлайн-витрина' }}</template>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </metainfo>
@@ -12,9 +12,9 @@
   import { RouterView } from 'vue-router'
   import { ModalsContainer } from 'vue-final-modal'
   import {useSiteInfo} from "@/stores/siteInfo";
-import { computed } from 'vue';
+  import { computed } from 'vue';
 
-  const siteInfo = useSiteInfo()
+  const siteInfoStore = useSiteInfo()
 
-  const siteName = computed(() => siteInfo.siteName ? siteInfo.siteName : 'Цветочная онлайн-витрина')
+  const siteName = computed(() => siteInfoStore.siteInfo.sitename ? ' | ' + siteInfoStore.siteInfo.sitename : '')
 </script>
