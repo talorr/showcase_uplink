@@ -9,7 +9,7 @@
     </div>
     <div class="product-item-price-row">
       <p class="product-item-price">{{ getFormattedProductPrice(product.price) }} ₽</p>
-      <p v-if="product.old_price" class="product-item-old-price">{{ getFormattedProductPrice(product.old_price) }} ₽</p>
+      <p v-if="product.old_price > 0" class="product-item-old-price">{{ getFormattedProductPrice(product.old_price) }} ₽</p>
       <template v-if="product.discount > 0">
         <div v-if="product.is_discount_number > 0" class="product-item-discount">{{ product.discount }}₽</div>
         <div v-else class="product-item-discount">{{ product.discount }}%</div>
