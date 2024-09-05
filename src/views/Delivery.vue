@@ -17,7 +17,7 @@
         </a>
         .
       </p>
-      <template v-if="data">
+      <template v-if="data.content.length > 0">
         <h2>Дополнительная информация</h2>
         <div v-html="data.content">
         </div>
