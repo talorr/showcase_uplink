@@ -36,7 +36,7 @@
         <div class="mobile-only">
           Доставка цветов
         <br class="mobile-only">
-        <span class="mobile-only">В {{ siteInfo?.siteInfo?.city }}</span>
+        <span class="mobile-only">В городе {{ siteInfo?.siteInfo?.city }}</span>
         </div>
 
         <a class="header__contacts" :href="`tel:${phoneToCall}`">
