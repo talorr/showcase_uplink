@@ -51,7 +51,16 @@ const router = createRouter({
       name: 'NotFound',
       component: NotFound
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    // Если есть сохранённая позиция (например, при нажатии кнопки "назад"), используем её
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      // Перемещаем скролл в начало страницы
+      return { top: 0 };
+    }
+  }
 })
 
 export default router
