@@ -1,7 +1,7 @@
 <template>
   <header>
     <div class="container">
-      <div class="header__info">
+      <div v-if="!infoIsEmpty" class="header__info">
         <div class="header__info-worktime">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M10 1C5.02991 1 1 5.02991 1 10C1 14.9701 5.02991 19 10 19C14.9701 19 19 14.9701 19 10C19 5.02991 14.9701 1 10 1ZM10 17.4732C5.87366 17.4732 2.52679 14.1263 2.52679 10C2.52679 5.87366 5.87366 2.52679 10 2.52679C14.1263 2.52679 17.4732 5.87366 17.4732 10C17.4732 14.1263 14.1263 17.4732 10 17.4732Z" fill="black"/>
@@ -28,15 +28,15 @@
           </div>  
         </div>
       </div>
-      <RouterLink class="header__logo" to="/">
-        <img class="logo" v-if="siteLogo" :src="`${siteLogo}`" alt="logo">
+      <RouterLink :style="{width: infoIsEmpty ? 'fit-content' : '100%'}" class="header__logo" to="/">
+        <img  class="logo" v-if="siteLogo" :src="`${siteLogo}`" alt="logo">
       </RouterLink>
-      <!-- <div></div> -->
+      <div class="desktop-only" v-if="infoIsEmpty"></div>
       <div class="header__cart-contacts">
         <div class="mobile-only">
           Доставка цветов
         <br class="mobile-only">
-        <span class="mobile-only">В городе {{ siteInfo?.siteInfo?.city }}</span>
+        <span v-if="!infoIsEmpty" class="mobile-only">В городе {{ siteInfo?.siteInfo?.city }}</span>
         </div>
 
         <a class="header__contacts" :href="`tel:${phoneToCall}`">
@@ -81,7 +81,7 @@ const siteInfo = useSiteInfo();
 
 const siteLogo = computed(() => siteInfo.siteInfo.logo ? import.meta.env.VITE_MAIN_SITE + siteInfo.siteInfo.logo : null);
 const showCart = computed(() => cartInfo.cart.length > 0);
-
+const infoIsEmpty = computed(() => !siteInfo?.siteInfo?.opening_hours && !siteInfo?.siteInfo?.city);
 const sklonenie = (number, txt) => {
     let cases = [2, 0, 1, 1, 1, 2];
     return txt[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];

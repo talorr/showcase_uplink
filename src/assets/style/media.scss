@@ -384,6 +384,9 @@ header {
 }
 
 @media (max-width: 550px) {
+    .desktop-only {
+        display: none !important;
+    }
     footer .footer__banner-text {
         width: 87%;
     }
