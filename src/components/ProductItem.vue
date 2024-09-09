@@ -99,8 +99,8 @@ function removeToCart() {
 
 const { product } = toRefs(props);
 const imgUrl = computed(() => {
-  if (!product.value?.images && !product.value?.images?.length) {
-    return ''
+  if (!product.value?.images?.length) {
+    return 'https://knowledge-base.uplinkweb.ru/files/showcase-empty.png'
   }
   return getImageOptimized(product.value?.images[0]?.url) + '?width=278&height=278&format=webp'
 

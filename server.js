@@ -39,6 +39,7 @@ app.use('*', async (req, res) => {
   try {
     // console.log(req.originalUrl)
     const url = req.originalUrl.replace(base, '')
+    console.log(req)
     let template
     let render
     if (!isProduction) {
@@ -57,7 +58,7 @@ app.use('*', async (req, res) => {
 
     template = template.replace('<!--headTags-->', headTags)
     template = template.replace('<!--app-html-->', stream)
-    const [htmlStart, htmlEnd] = template.split('<!--app-html-->')
+    // const [htmlStart, htmlEnd] = template.split('<!--app-html-->')
     // const [headStart, headEnd] = template.split('<!--headTags-->')
     res.status(200).set({ 'Content-Type': 'text/html' })
 
