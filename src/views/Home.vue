@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import { useHead } from '@vueuse/head'
+import { useHead } from '@unhead/vue'
 useHead({
   title: "Цветочная онлайн-витрина",
   meta: [

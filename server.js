@@ -49,10 +49,12 @@ app.use('*', async (req, res) => {
     } else {
       template = templateHtml
       render = (await import('./dist/server/entry-server.js')).render
+      
     }
+ 
 
     const stream = await render(url, ssrManifest)
-
+  
     const [htmlStart, htmlEnd] = template.split('<!--app-html-->')
 
     res.status(200).set({ 'Content-Type': 'text/html' })

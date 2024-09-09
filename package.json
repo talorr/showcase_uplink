@@ -11,6 +11,7 @@
     "preview": "cross-env NODE_ENV=production node server"
   },
   "dependencies": {
+    "@unhead/ssr": "^1.11.1",
     "@vuepic/vue-datepicker": "^8.8.0",
     "@vueuse/head": "^2.0.0",
     "axios": "^1.7.2",

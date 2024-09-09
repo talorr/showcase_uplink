@@ -5,7 +5,7 @@ import { loadScript, createMetrika, startTracking } from './yandex-metrika/helpe
 import App from './App.vue';
 import { useSiteInfo } from './stores/siteInfo';
 import router from './router'
-import { createHead } from '@vueuse/head'
+import { createHead } from '@unhead/vue'
 
 import 'vue-final-modal/style.css'
 import "./assets/style/main.scss";
@@ -17,11 +17,11 @@ export async function createApp() {
   const head = createHead()
   const vfm = createVfm()
 
-
+  app.use(head)
   app.use(pinia);
   app.use(router)
   // app.use(meta) 
-  app.use(head)
+
   app.use(vfm)
   try {
     const siteStore = useSiteInfo()
@@ -35,5 +35,5 @@ export async function createApp() {
   } catch (error) {
     console.log(error) 
   }
-  return { app, router }
+  return { app, router,head }
 }

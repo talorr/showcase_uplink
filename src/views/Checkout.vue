@@ -273,7 +273,7 @@
 
 <script setup>
 import Image from "@/components/Image.vue";
-import { useHead } from '@vueuse/head'
+import { useHead } from '@unhead/vue'
 
 useHead({
   title: "Оформление заказа",
