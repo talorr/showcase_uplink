@@ -52,6 +52,7 @@ import Footer from "@/components/Footer.vue";
 import apiClient from "@/axios.js";
 import BottomCartMobile from "@/components/BottomCartMobile.vue";
 import Pagination from "@/components/Pagination.vue";
+import axios from 'axios';
 
 const sortsList = ref([
   {
@@ -106,7 +107,7 @@ let filter = ref({
 });
 
 let getCountProducts = async () => {
-  let response = await apiClient.get(`/products-count?limit=${filter.value.limit}`);
+  let response = await axios.get(`/products-count?limit=${filter.value.limit}`);
   countPage.value = response.data.pages;
 };
 
@@ -119,7 +120,7 @@ let getProducts = async (page) => {
   refFilter.publishedOnly = 1
   
   filter.value.offset = refFilter.offset
-  let response = await apiClient.get(`/products?${new URLSearchParams(refFilter)}`);
+  let response = await axios.get(`/products?${new URLSearchParams(refFilter)}`);
   products.value = response.data.products;
   currentPage.value = page;
 

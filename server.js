@@ -39,7 +39,7 @@ app.use('*', async (req, res) => {
   try {
     // console.log(req.originalUrl)
     const url = req.originalUrl.replace(base, '')
-    console.log(req)
+    const domain = req.headers.referer
     let template
     let render
     if (!isProduction) {
@@ -54,7 +54,7 @@ app.use('*', async (req, res) => {
     }
  
 
-    const { stream, headTags } = await render(url, ssrManifest)
+    const { stream, headTags } = await render(url, ssrManifest, domain)
 
     template = template.replace('<!--headTags-->', headTags)
     template = template.replace('<!--app-html-->', stream)

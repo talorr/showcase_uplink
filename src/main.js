@@ -6,12 +6,18 @@ import App from './App.vue';
 import { useSiteInfo } from './stores/siteInfo';
 import router from './router'
 import { createHead } from '@unhead/vue'
+import axios from 'axios'
 
 import 'vue-final-modal/style.css'
 import "./assets/style/main.scss";
 import '@vuepic/vue-datepicker/dist/main.css'
 
-export async function createApp() {
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
+
+export async function createApp(domain) {
+  axios.defaults.headers = {
+    'customOrigin': domain
+  };
   const app = createSSRApp(App)
   const pinia = createPinia();
   const head = createHead()

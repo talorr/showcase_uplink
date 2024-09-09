@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import apiClient from '../axios.js';
+import axios from 'axios';
 
 export const useSiteInfo = defineStore('siteInfo', {
     state: () => ({
@@ -8,7 +8,7 @@ export const useSiteInfo = defineStore('siteInfo', {
     }),
     actions: {
         async getSiteSettings() {
-            let response = await apiClient.get('/site-settings');
+            let response = await axios.get('/site-settings');
             response.data.settings.forEach((setting) => {
                 setting.values.forEach((elem) => {
                     this.siteInfo[elem.key] = elem.value
