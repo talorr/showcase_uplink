@@ -5,21 +5,23 @@ import { loadScript, createMetrika, startTracking } from './yandex-metrika/helpe
 import App from './App.vue';
 import { useSiteInfo } from './stores/siteInfo';
 import router from './router'
+import { createHead } from '@vueuse/head'
 
 import 'vue-final-modal/style.css'
 import "./assets/style/main.scss";
 import '@vuepic/vue-datepicker/dist/main.css'
-import { createMetaManager } from 'vue-meta'
 
 export async function createApp() {
   const app = createSSRApp(App)
   const pinia = createPinia();
+  const head = createHead()
   const vfm = createVfm()
-  const meta = createMetaManager(true)
+
 
   app.use(pinia);
   app.use(router)
-  app.use(meta) 
+  // app.use(meta) 
+  app.use(head)
   app.use(vfm)
   try {
     const siteStore = useSiteInfo()
@@ -33,5 +35,5 @@ export async function createApp() {
   } catch (error) {
     console.log(error) 
   }
-  return { app, router, meta }
+  return { app, router }
 }

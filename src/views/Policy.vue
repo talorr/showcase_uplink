@@ -124,11 +124,15 @@
 </template>
 
 <script setup>
-import {
-    useMeta
-} from "vue-meta";
-useMeta({
+import { useHead } from '@vueuse/head'
+useHead({
     title: "Политика конфиденциальности",
+    meta: [
+        {
+            name: 'description',
+            content: 'Политика конфиденциальности'
+        }
+    ]
 })
 import {
     ref,

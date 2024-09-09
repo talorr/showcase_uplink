@@ -125,9 +125,16 @@
 
 <script setup>
 import Image from "@/components/Image.vue";
-import { useMeta } from "vue-meta";
-useMeta({
+import { useHead } from '@vueuse/head'
+
+useHead({
   title: "Корзина",
+  meta: [
+    {
+      name: 'description',
+      content: 'Корзина'
+    }
+  ]
 })
 import { computed } from 'vue';
 import HeaderCart from "@/components/HeaderCart.vue";

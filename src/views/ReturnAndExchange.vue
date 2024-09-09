@@ -56,11 +56,15 @@
 </template>
 
 <script setup>
-import {
-    useMeta
-} from "vue-meta";
-useMeta({
+import { useHead } from '@vueuse/head'
+useHead({
     title: "Возврат и обмен",
+    meta: [
+        {
+            name: 'description',
+            content: 'Возврат и обмен'
+        }
+    ]
 })
 import {
     ref,

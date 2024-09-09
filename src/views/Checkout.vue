@@ -273,10 +273,16 @@
 
 <script setup>
 import Image from "@/components/Image.vue";
-import { useMeta } from "vue-meta";
-useMeta({
+import { useHead } from '@vueuse/head'
+
+useHead({
   title: "Оформление заказа",
-  description: 'test'
+  meta: [
+    {
+      name: "description",
+      content: "Оформление заказа"
+    }
+  ]
 })
 import {ref, reactive, onMounted, watch, computed, watchEffect} from 'vue';
 import HeaderCheckout from "@/components/HeaderCheckout.vue";

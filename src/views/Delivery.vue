@@ -30,9 +30,16 @@
 </template>
 
 <script setup>
-import { useMeta } from "vue-meta";
-useMeta({
+import { useHead } from '@vueuse/head'
+
+useHead({
   title: "Доставка",
+  meta: [
+    {
+      name: 'description',
+      content: 'Доставка'
+    }
+  ]
 })
 import { useSiteInfo } from '@/stores/siteInfo';
 const siteInfoStore = useSiteInfo();

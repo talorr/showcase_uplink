@@ -31,9 +31,19 @@
 </template>
 
 <script setup>
-import { useMeta } from "vue-meta";
-useMeta({
+import { useHead } from '@vueuse/head'
+useHead({
   title: "Цветочная онлайн-витрина",
+  meta: [
+    {
+      name: 'description',
+      content: 'Цветочная онлайн-витрина'
+    },
+    {
+      name: 'keywords',
+      content: 'Цветочная онлайн-витрина'
+    }
+  ]
 })
 import { ref, reactive, onMounted, watch } from 'vue';
 import MainHeader from "@/components/MainHeader.vue";
