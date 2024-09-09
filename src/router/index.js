@@ -10,8 +10,10 @@ import ReturnAndExchange from "@/views/ReturnAndExchange.vue";
 
 import NotFound from "@/views/404.vue";
 
+const isServer = typeof window === 'undefined';
+
 const router = createRouter({
-  history: createMemoryHistory(),
+history: isServer ? createMemoryHistory() : createWebHistory(),
   routes: [
     {
       path: '/',

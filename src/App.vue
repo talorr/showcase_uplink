@@ -4,10 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </metainfo>
+  <RouterView v-slot="{ Component }">
+    <template v-if="Component">
+      <KeepAlive>
+        <Suspense>
+          <component :is="Component"></component>
 
-  <RouterView />
-  <!-- <ModalsContainer />  -->
-  <Test />
+          <template #fallback>
+            Loading...
+          </template>
+        </Suspense>
+      </KeepAlive>
+    </template>
+  </RouterView>
+  <!-- <Suspense> -->
+    <!-- <RouterView /> -->
+    <!-- <ModalsContainer />  -->
+    <!-- <Test /> -->
+  <!-- </Suspense> -->
 </template>
 
 <script setup>
