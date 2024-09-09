@@ -3,9 +3,21 @@
   <head>
     <link rel="icon" href="/favicon.ico">
     <!--app-head-->
+    <style>
+      /* Класс, который скроет содержимое до инициализации Vue */
+      .hidden {
+        display: none;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"><!--app-html--></div>
+    <div id="app" class="hidden"><!--app-html--></div>
     <script type="module" src="/src/entry-client.js"></script>
+    <script>
+      // Удаляем класс hidden, когда все стили и скрипты загружены
+      window.addEventListener('load', function() {
+        document.getElementById('app').classList.remove('hidden');
+      });
+    </script>
   </body>
 </html>
