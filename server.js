@@ -53,18 +53,27 @@ app.use('*', async (req, res) => {
     }
  
 
-    const stream = await render(url, ssrManifest)
-  
-    const [htmlStart, htmlEnd] = template.split('<!--app-html-->')
+    const { stream, headTags } = await render(url, ssrManifest)
 
+    template = template.replace('<!--headTags-->', headTags)
+    template = template.replace('<!--app-html-->', stream)
+    const [htmlStart, htmlEnd] = template.split('<!--app-html-->')
+    // const [headStart, headEnd] = template.split('<!--headTags-->')
     res.status(200).set({ 'Content-Type': 'text/html' })
 
-    res.write(htmlStart)
-    for await (const chunk of stream) {
-      if (res.closed) break
-      res.write(chunk)
-    }
-    res.write(htmlEnd)
+    // res.write(headStart)
+    // for await (const chunk of headTags) {
+    //   if (res.closed) break
+    //   res.write(chunk)
+    // }
+    // res.write(headEnd)
+
+    // res.write(htmlStart)
+    // for await (const chunk of stream) {
+    //   if (res.closed) break
+    // }
+    // res.write(htmlEnd)
+    res.write(template)
     res.end()
   } catch (e) {
     vite?.ssrFixStacktrace(e)

@@ -45,7 +45,7 @@ useHead({
     }
   ]
 })
-import { ref, reactive, onMounted, watch } from 'vue';
+import { ref, reactive, onMounted, watch, onBeforeMount} from 'vue';
 import MainHeader from "@/components/MainHeader.vue";
 import ProductItem from "@/components/ProductItem.vue";
 import Footer from "@/components/Footer.vue";
@@ -122,12 +122,25 @@ let getProducts = async (page) => {
   let response = await apiClient.get(`/products?${new URLSearchParams(refFilter)}`);
   products.value = response.data.products;
   currentPage.value = page;
+
+  return
 };
 
-onMounted(() => {
-  getCountProducts()
-  getProducts(currentPage.value);
-});
+
+await getProducts(currentPage.value);
+await getCountProducts()
+// onBeforeMount(async () => {
+// })
+// Если на стороне сервера, нужно вызвать запрос напрямую
+// if (typeof window === 'undefined') {
+//   console.log('unde')
+// } else {
+//   // Если на клиенте, то выполняем запрос при монтировании
+//   onMounted(() => {
+//     getProducts(currentPage.value);
+//     getCountProducts()
+//   });
+// }
 
 watch(() => filter.sortBy, () => {
   getProducts(currentPage.value);

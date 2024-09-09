@@ -1,11 +1,13 @@
 import { createApp } from './main'
 import { renderToString } from '@vue/server-renderer';
 import { renderSSRHead } from '@unhead/ssr'
+
 export async function render(url, manifest) {
   const { app, router, head } = await createApp()
 
   // Настраиваем роутер перед рендерингом
-  router.push(url);
+  await router.push(url ? url[0] != '/' ? '/' + url : url : '/');
+  // await router.push(url);
   // Дожидаемся завершения инициализации роутера
   await router.isReady();
 
@@ -16,5 +18,5 @@ export async function render(url, manifest) {
   const headPayload = await renderSSRHead(head)
 
   // Возвращаем HTML контент, который сервер отдаст клиенту
-  return headPayload.headTags +appContent;
+  return { headTags: headPayload.headTags, stream : appContent};
 }
