@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </metainfo>
+
   <RouterView />
-  <ModalsContainer />
+  <!-- <ModalsContainer />  -->
+  <Test />
 </template>
 
 <script setup>
@@ -13,6 +15,8 @@
   import { ModalsContainer } from 'vue-final-modal'
   import {useSiteInfo} from "@/stores/siteInfo";
   import { computed } from 'vue';
+  import Test from './Test.vue'
+
 
   const siteInfoStore = useSiteInfo()
 

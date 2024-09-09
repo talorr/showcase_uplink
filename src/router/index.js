@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/Home.vue'
 
 import Cart from "@/views/Cart.vue";
@@ -11,7 +11,7 @@ import ReturnAndExchange from "@/views/ReturnAndExchange.vue";
 import NotFound from "@/views/404.vue";
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createMemoryHistory(),
   routes: [
     {
       path: '/',

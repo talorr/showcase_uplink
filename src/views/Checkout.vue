@@ -276,6 +276,7 @@ import Image from "@/components/Image.vue";
 import { useMeta } from "vue-meta";
 useMeta({
   title: "Оформление заказа",
+  description: 'test'
 })
 import {ref, reactive, onMounted, watch, computed, watchEffect} from 'vue';
 import HeaderCheckout from "@/components/HeaderCheckout.vue";

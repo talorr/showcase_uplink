@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useCartInfo = defineStore('cart', {
     state: () => ({
-        cart: JSON.parse(localStorage.getItem('cartItems')) || [],
+        cart: (typeof window !== 'undefined') ? JSON.parse(localStorage.getItem('cartItems')) : [],
     }),
     actions: {
         addItem(product, quantity = 1) {
@@ -36,11 +36,11 @@ export const useCartInfo = defineStore('cart', {
             }
         },
         saveToLocalStorage() {
-            localStorage.setItem('cartItems', JSON.stringify(this.cart));
+            if (typeof window !== 'undefined') localStorage.setItem('cartItems', JSON.stringify(this.cart));
         },
         clearCart() {
             this.cart = [];
-            localStorage.removeItem('cartItems');
+            if (typeof window !== 'undefined') localStorage.removeItem('cartItems');
         },
     },
 });

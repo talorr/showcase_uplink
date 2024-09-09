@@ -16,9 +16,9 @@ export default defineConfig({
     minify: 'esbuild',
     rollupOptions: {
       output: {
-        entryFileNames: `[name]` + hash + `.js`,
-        chunkFileNames: `[name]` + hash + `.js`,
-        assetFileNames: `[name]` + hash + `.[ext]`,
+        entryFileNames: `[name]` + `.js`,
+        chunkFileNames: `[name]` + `.js`,
+        assetFileNames: `[name]` + `.[ext]`,
         manualChunks(id) {
             if (id.includes('node_modules')) {
               return id.toString().split('node_modules/')[1].split('/')[0].toString();
