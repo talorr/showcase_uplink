@@ -39,7 +39,7 @@ app.use('*', async (req, res) => {
   try {
     // console.log(req.originalUrl)
     const url = req.originalUrl.replace(base, '')
-    const domain = req.headers.referer
+    const domain = req.headers.referer ? req.headers.referer : 'https://' + req.headers.host
     let template
     let render
     if (!isProduction) {

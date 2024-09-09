@@ -8,17 +8,4 @@ const apiClient = axios.create({
     },
 });
 
-// apiClient.interceptors.request.use(
-//   function (config) {
-//     // Do something before request is sent
-//     config.params = { ...config.params, timestamp: Date.now() };
-//     // console.log(window.location)
-
-//     return config;
-//   },
-//   function (error) {
-//     // Do something with request error
-//     return Promise.reject(error);
-//   }
-// )
 export default apiClient;
