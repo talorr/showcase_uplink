@@ -143,7 +143,7 @@ import { useSiteInfo } from '@/stores/siteInfo';
 const siteInfoStore = useSiteInfo();
 import MainHeader from "../components/MainHeader.vue";
 import Footer from "@/components/Footer.vue";
-import apiClient from "../axios";
+import axios from 'axios';
 
 let data = ref({});
 const siteUrl = computed(()=> {
@@ -153,7 +153,7 @@ const siteUrl = computed(()=> {
 const siteEmail = computed(() => siteInfoStore.siteInfo.email);
 const orgName = computed(() => siteInfoStore.siteInfo.organization_name);
 const init = async () => {
-    let response = await apiClient.get('/showcase-params');
+    let response = await axios.get('/showcase-params');
     data.value = response.data.settings.policy;
 };
 onMounted(() => {

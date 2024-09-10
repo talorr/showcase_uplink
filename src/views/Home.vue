@@ -49,7 +49,6 @@ import { ref, reactive, onMounted, watch, onBeforeMount} from 'vue';
 import MainHeader from "@/components/MainHeader.vue";
 import ProductItem from "@/components/ProductItem.vue";
 import Footer from "@/components/Footer.vue";
-import apiClient from "@/axios.js";
 import BottomCartMobile from "@/components/BottomCartMobile.vue";
 import Pagination from "@/components/Pagination.vue";
 import axios from 'axios';

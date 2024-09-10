@@ -288,7 +288,7 @@ import {ref, reactive, onMounted, watch, computed, watchEffect} from 'vue';
 import HeaderCheckout from "@/components/HeaderCheckout.vue";
 import Footer from "@/components/Footer.vue";
 import {useCartInfo} from "@/stores/cartInfo";
-import apiClient from "@/axios.js";
+import axios from "axios";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { getImageOptimized } from "@/composables/utils";
@@ -395,7 +395,7 @@ const requestPayment = async (orderId) => {
     const payload = {
       orderId: orderId,
     };
-    const response = await apiClient.post(import.meta.env.VITE_API_BASE_URL + "/create-order-payment", payload);
+    const response = await axios.post(import.meta.env.VITE_API_BASE_URL + "/create-order-payment", payload);
     if (response.data.payment.confirmation.confirmation_url) {
       window
         .open(response.data.payment.confirmation.confirmation_url, "_blank")
@@ -465,7 +465,7 @@ const setDeliveryType = (type) => {
 }
 
 async function getDeliveriesList() {
-  let responseDeliveries = await apiClient.get('/deliveries-list');
+  let responseDeliveries = await axios.get('/deliveries-list');
   deliveriesList.value = responseDeliveries.data.deliveries
 
   let firstPickupDelivery = deliveriesList.value.find(item => item.description == '0')
@@ -480,12 +480,12 @@ async function getDeliveriesList() {
 }
 
 async function getPaymentsList() {
-  let responsePayments = await apiClient.get('/payments-list');
+  let responsePayments = await axios.get('/payments-list');
   paymentsList.value = responsePayments.data.payments.filter(item => item.active)
 }
 
 async function getIntervals() {
-  let responseIntervals = await apiClient.get('/intervals');
+  let responseIntervals = await axios.get('/intervals');
   if (responseIntervals.data.intervals) deliveryIntervals.value = responseIntervals.data.intervals?.options?.split(",")
 }
 
@@ -645,7 +645,7 @@ async function makeOrder() {
   }
 
   try {
-    let { data: responseMakeOrder } = await apiClient.post('/create-order', { order: obj });
+    let { data: responseMakeOrder } = await axios.post('/create-order', { order: obj });
 
     if (paymentsList.value.length && siteInfo.yookassaConnected) {
       const payment = paymentsList.value.find(item => item.id == obj.payment)
@@ -654,9 +654,9 @@ async function makeOrder() {
 
     cartInfo.clearCart()
     orderCreated.value = true
-    justCreatedOrder.value = (await apiClient.get('/order?id=' + responseMakeOrder.orderId)).data.order;
+    justCreatedOrder.value = (await axios.get('/order?id=' + responseMakeOrder.orderId)).data.order;
     // Create payment
-    // const paymentResponse = await apiClient.post('/create-order-payment', {
+    // const paymentResponse = await axios.post('/create-order-payment', {
     //   amount: newOrder.cost,
     //   currency: 'RUB',
     //   description: `Order ${responseMakeOrder.orderId}`,

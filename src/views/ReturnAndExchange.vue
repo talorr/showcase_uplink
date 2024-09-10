@@ -66,11 +66,7 @@ useHead({
         }
     ]
 })
-import {
-    ref,
-    onMounted,
-    computed
-} from 'vue';
+import { computed } from 'vue';
 import MainHeader from "../components/MainHeader.vue";
 import Footer from "@/components/Footer.vue";
 import { useSiteInfo } from '@/stores/siteInfo';
@@ -85,14 +81,4 @@ const siteUrl = computed(()=> {
 const siteName = computed(() => siteInfoStore.siteInfo.sitename);
 const siteEmail = computed(() => siteInfoStore.siteInfo.email);
 const orgName = computed(() => siteInfoStore.siteInfo.organization_name);
-// let data = ref({});
-
-// const init = async () => {
-//     let response = await apiClient.get('/showcase-params');
-//     data.value = response.data.settings.return_and_exchange;
-// };
-
-onMounted(() => {
-    // init();
-});
 </script>

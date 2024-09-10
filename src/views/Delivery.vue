@@ -45,10 +45,10 @@ const siteInfoStore = useSiteInfo();
 import { ref, onMounted, computed } from 'vue';
 import MainHeader from "../components/MainHeader.vue";
 import Footer from "@/components/Footer.vue";
-import apiClient from "../axios";
+import axios from 'axios';
 
 async function getDeliveriesList() {
-  let responseDeliveries = await apiClient.get('/deliveries-list');
+  let responseDeliveries = await axios.get('/deliveries-list');
   deliveriesList.value = responseDeliveries.data.deliveries
 }
 const phoneToCall = computed(() => siteInfoStore.siteInfo.phone[0] == 8 ? '+7' + siteInfoStore.siteInfo.phone.slice(1) : siteInfoStore.siteInfo.phone);
@@ -56,7 +56,7 @@ const deliveriesList = ref([]);
 const data = ref(null);
 
 const init = async () => {
-  let response = await apiClient.get('/showcase-params');
+  let response = await axios.get('/showcase-params');
   data.value = response.data.settings.terms;
 };
 
