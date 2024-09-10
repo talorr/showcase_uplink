@@ -4,5 +4,11 @@ Disallow: /cart/
 User-agent: *
 Disallow: /checkout/
 
+User-agent: *
+Disallow: /return-and-exchange/
+
+User-agent: *
+Disallow: /policy/
+
 Host: https://promo-ssr.uplinkweb.ru/
 Sitemap: https://promo-ssr.uplinkweb.ru/sitemap.xml
