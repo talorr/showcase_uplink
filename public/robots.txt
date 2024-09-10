@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /cart/
+
+User-agent: *
+Disallow: /checkout/
+
+Host: https://promo-ssr.uplinkweb.ru/
+Sitemap: https://promo-ssr.uplinkweb.ru/sitemap.xml

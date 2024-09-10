@@ -2,8 +2,9 @@ import { fileURLToPath, URL } from 'node:url'
 import manifestSRI from 'vite-plugin-manifest-sri'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import generateSitemap from 'vite-ssg-sitemap'
 
-const hash = Math.floor(Date.now() / 1000);
+// const hash = Math.floor(Date.now() / 1000);
 
 export default defineConfig({
   base: '/',
@@ -41,6 +42,9 @@ export default defineConfig({
         }
       }
     },
+  },
+  ssgOptions: {
+    onFinished() { generateSitemap() },
   },
   resolve: {
     alias: {
