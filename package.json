@@ -31,8 +31,6 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
     "vite": "^5.2.8",
-    "vite-plugin-manifest-sri": "^0.2.0",
-    "vite-ssg": "^0.23.8",
-    "vite-ssg-sitemap": "^0.8.1"
+    "vite-plugin-manifest-sri": "^0.2.0"
   }
 }
