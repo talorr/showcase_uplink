@@ -12,6 +12,7 @@ export default defineConfig({
   ],
   server:{port: 3006},
   build: {
+    manifest: true,
     target: "ES2022",
     minify: 'esbuild',
     rollupOptions: {

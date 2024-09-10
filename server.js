@@ -1,12 +1,12 @@
 import fs from 'node:fs/promises'
 import express from 'express'
 import dotenv from 'dotenv'
+import path from 'path';
 
 dotenv.config()
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production'
-// console.log(process.env.NODE_ENV)
 const port = process.env.PORT || 5174
 const base = process.env.BASE || '/'
 
@@ -53,7 +53,9 @@ app.use('*', async (req, res) => {
       render = (await vite.ssrLoadModule('/src/entry-server.js')).render
     } else {
       template = templateHtml
-      render = (await import('./dist/server/entry-server.js')).render
+      const manifest = JSON.parse(await fs.readFile('./dist/server/.vite/manifest.json'), 'utf-8');
+      const entryServerPath = manifest['src/entry-server.js'].file;
+      render = (await import(`./dist/server/${entryServerPath}`)).render
       
     }
  
@@ -62,22 +64,8 @@ app.use('*', async (req, res) => {
 
     template = template.replace('<!--headTags-->', headTags)
     template = template.replace('<!--app-html-->', stream)
-    // const [htmlStart, htmlEnd] = template.split('<!--app-html-->')
-    // const [headStart, headEnd] = template.split('<!--headTags-->')
     res.status(200).set({ 'Content-Type': 'text/html' })
 
-    // res.write(headStart)
-    // for await (const chunk of headTags) {
-    //   if (res.closed) break
-    //   res.write(chunk)
-    // }
-    // res.write(headEnd)
-
-    // res.write(htmlStart)
-    // for await (const chunk of stream) {
-    //   if (res.closed) break
-    // }
-    // res.write(htmlEnd)
     res.write(template)
     res.end()
   } catch (e) {
