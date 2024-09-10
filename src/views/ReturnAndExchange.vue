@@ -74,8 +74,8 @@ const siteInfoStore = useSiteInfo();
 
 
 const siteUrl = computed(()=> {
-  if(window.location.origin.includes('https')) return window.location.origin.replace('https://', '');
-  if(window.location.origin.includes('http')) return window.location.origin.replace('http://', '');
+  if(typeof window !== 'undefined' && window.location.origin.includes('https')) return window.location.origin.replace('https://', '');
+  if(typeof window !== 'undefined' && window.location.origin.includes('http')) return window.location.origin.replace('http://', '');
 });
 
 const siteName = computed(() => siteInfoStore.siteInfo.sitename);
