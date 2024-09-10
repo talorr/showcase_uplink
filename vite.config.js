@@ -1,14 +1,18 @@
 import { fileURLToPath, URL } from 'node:url'
-
+import manifestSRI from 'vite-plugin-manifest-sri'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 const hash = Math.floor(Date.now() / 1000);
 
 export default defineConfig({
-  // base: '/',
+  base: '/',
   plugins: [
     vue(),
+    manifestSRI({
+      // Этот плагин сгенерирует SRI атрибуты (хэши) для ресурсов
+      hashAlgorithm: 'sha384'
+    })
   ],
   server:{port: 3006},
   build: {
@@ -17,9 +21,9 @@ export default defineConfig({
     minify: 'esbuild',
     rollupOptions: {
       output: {
-        entryFileNames: `[name]` + hash + `.js`,
-        chunkFileNames: `[name]` + hash + `.js`,
-        assetFileNames: `[name]` + hash + `.[ext]`,
+        entryFileNames: '[name].[hash].js',
+        chunkFileNames: '[name].[hash].js',
+        assetFileNames: '[name].[hash].[ext]',
         manualChunks(id) {
             if (id.includes('node_modules')) {
               return id.toString().split('node_modules/')[1].split('/')[0].toString();
