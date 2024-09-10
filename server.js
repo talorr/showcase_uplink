@@ -1,8 +1,12 @@
 import fs from 'node:fs/promises'
 import express from 'express'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 // Constants
 const isProduction = process.env.NODE_ENV === 'production'
+// console.log(process.env.NODE_ENV)
 const port = process.env.PORT || 5174
 const base = process.env.BASE || '/'
 
