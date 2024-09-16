@@ -159,10 +159,11 @@ header {
         height: inherit;
         max-height: 78px;
         max-width: 250px;
-        margin-right: auto;
+      
         object-fit: contain;
 
         @media (max-width: 768px) {
+          margin-right: auto;
           max-height: none;
           height: 100%;
           width: 100%;
