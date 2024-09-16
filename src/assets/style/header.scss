@@ -18,7 +18,8 @@ header {
     align-items: center;
 
     @media (max-width: 550px) {
-      width: 50%;
+      max-width:100px !important;
+      width: 100px !important;
       justify-content: start; 
     }
   }
