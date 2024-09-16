@@ -132,9 +132,8 @@ header {
     align-items: center;
 
     @media (max-width: 550px) {
-      grid-template-columns: auto minmax(50px, 1fr);
+      grid-template-columns: repeat(2, minmax(50px, 1fr));
       height: 85px;
-      position: relative; /* Необходимо для абсолютного позиционирования на мобильных устройствах */
     }
 
     a {
@@ -145,8 +144,6 @@ header {
 
       @media (max-width: 550px) {
         height: unset;
-        align-items: flex-start;
-        justify-content: flex-start;
       }
 
       @media (max-width: 768px) {
