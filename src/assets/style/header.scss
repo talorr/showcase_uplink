@@ -14,11 +14,11 @@ header {
   }
 
   .header__logo {
-    width: 100%;
     justify-content: center;
     align-items: center;
 
     @media (max-width: 550px) {
+      width: fit-content;
       justify-content: start; 
     }
   }
@@ -132,7 +132,9 @@ header {
     align-items: center;
 
     @media (max-width: 550px) {
-      grid-template-columns: repeat(2, minmax(50px, 1fr));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       height: 85px;
     }
 
