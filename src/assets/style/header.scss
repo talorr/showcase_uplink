@@ -132,9 +132,10 @@ header {
     align-items: center;
 
     @media (max-width: 550px) {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      grid-template-columns: repeat(2, minmax(50px, 1fr));
+      &:first-child {
+        margin-right: auto;
+      }
       height: 85px;
     }
 
