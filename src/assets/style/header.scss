@@ -132,12 +132,12 @@ header {
     align-items: center;
 
     @media (max-width: 550px) {
-      grid-template-columns: 1fr 2fr; /* Явное изменение шаблона на 2 колонки */
+      grid-template-columns: auto minmax(50px, 1fr);
       height: 85px;
-      position: relative;
+      position: relative; /* Необходимо для абсолютного позиционирования на мобильных устройствах */
     }
 
-    a {
+    a.header__logo {
       display: flex;
       align-items: center;
       max-height: 78px;
@@ -147,7 +147,6 @@ header {
         height: unset;
         align-items: flex-start;
         justify-content: flex-start;
-        grid-column: 1 / 2; /* Помещаем логотип в первый столбец сетки */
       }
 
       @media (max-width: 768px) {
