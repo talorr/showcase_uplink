@@ -132,10 +132,7 @@ header {
     align-items: center;
 
     @media (max-width: 550px) {
-      grid-template-columns: repeat(2, minmax(50px, 1fr));
-      &:first-child {
-        margin-right: auto;
-      }
+      grid-template-columns: auto minmax(50px, 1fr);
       height: 85px;
     }
 
