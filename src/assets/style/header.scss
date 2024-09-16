@@ -18,8 +18,8 @@ header {
     align-items: center;
 
     @media (max-width: 550px) {
-      max-width:max-content !important;
-      width: max-content !important;
+      max-width:200px !important;
+      width: 70px !important;
       justify-content: start; 
     }
   }
