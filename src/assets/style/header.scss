@@ -137,10 +137,8 @@ header {
       position: relative;
     }
 
-    a.header__logo {
-      display: -webkit-box;   /* Для старых версий Safari */
+    a {
       display: -webkit-flex;  /* Для iOS Safari */
-      display: -ms-flexbox;   /* Для IE */
       display: flex;
       align-items: center;
       max-height: 78px;
