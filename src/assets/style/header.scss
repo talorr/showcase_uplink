@@ -18,8 +18,9 @@ header {
     align-items: center;
 
     @media (max-width: 550px) {
-      width: fit-content;
-      justify-content: start; 
+      width: auto;
+      justify-content: flex-start; 
+      margin-right: auto;
     }
   }
 
@@ -132,7 +133,7 @@ header {
     align-items: center;
 
     @media (max-width: 550px) {
-      grid-template-columns: repeat(2, minmax(50px, 1fr));
+      grid-template-columns: auto minmax(50px, 1fr);
       height: 85px;
     }
 
@@ -154,6 +155,7 @@ header {
         height: inherit;
         max-height: 78px;
         max-width: 250px;
+        margin-right: auto;
         object-fit: contain;
 
         @media (max-width: 768px) {
