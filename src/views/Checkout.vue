@@ -468,15 +468,15 @@ async function getDeliveriesList() {
   let responseDeliveries = await axios.get('/deliveries-list');
   deliveriesList.value = responseDeliveries.data.deliveries
 
-  let firstPickupDelivery = deliveriesList.value.find(item => item.description == '0')
-  if (firstPickupDelivery) {
-    // console.log(firstPickupDelivery)
-    order.delivery = firstPickupDelivery.id
-    order.delivery_rank = '0'
-    // order.delivery_cost = Number(firstPickupDelivery.price)
-    // console.log(order.delivery_cost)
-    deliveryPrice(order.delivery)
-  }
+  // let firstPickupDelivery = deliveriesList.value.find(item => item.description == '0')
+  // if (firstPickupDelivery) {
+  //   // console.log(firstPickupDelivery)
+  //   order.delivery = firstPickupDelivery.id
+  //   order.delivery_rank = '0'
+  //   // order.delivery_cost = Number(firstPickupDelivery.price)
+  //   // console.log(order.delivery_cost)
+  //   deliveryPrice(order.delivery)
+  // }
 }
 
 async function getPaymentsList() {
