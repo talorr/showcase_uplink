@@ -63,11 +63,11 @@
         </div>
       </div>
       <div class="footer__organization">
-        {{ siteInfo.organization_name ? siteInfo.organization_name : "" }}
-        {{ siteInfo.inn ? "ИНН: " + siteInfo.inn : "" }}
-        {{ siteInfo.kpp ? "КПП: " + siteInfo.kpp : "" }}
-        {{ siteInfo.ogrn ? "ОГРН: " + siteInfo.ogrn : "" }}
-        {{ siteInfo.ogrnip ? "ОГРНИП: " + siteInfo.ogrnip : "" }}
+        <div v-show="siteInfo.organization_name">{{ siteInfo.organization_name }}</div>
+        <div v-show="siteInfo.inn">{{ "ИНН: " + siteInfo.inn  }}</div>
+        <div v-show="siteInfo.kpp">{{ "КПП: " + siteInfo.kpp }}</div>
+        <div v-show="siteInfo.ogrn">{{ "ОГРН: " + siteInfo.ogrn }}</div>
+        <div v-show="siteInfo.ogrnip">{{  "ОГРНИП: " + siteInfo.ogrnip}}</div>
       </div>
 
       <BannerFooter/>

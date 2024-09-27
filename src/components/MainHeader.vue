@@ -28,7 +28,7 @@
           </div>  
         </div>
       </div>
-      <RouterLink :style="{width: infoIsEmpty ? 'fit-content' : '100%'}" class="header__logo" to="/">
+      <RouterLink :style="{width: infoIsEmpty ? 'fit-content' : isMobile ? 'fit-content' : '100%'}" class="header__logo" to="/">
         <img  class="logo" v-if="siteLogo" :src="`${siteLogo}`" alt="logo">
       </RouterLink>
       <div class="desktop-only" v-if="infoIsEmpty"></div>
@@ -78,7 +78,7 @@ const phone = computed(() => siteInfo.siteInfo.phone.replace(/(\d{1})(\d{3})(\d{
 const phoneToCall = computed(() => siteInfo.siteInfo.phone[0] == 8 ? '+7' + siteInfo.siteInfo.phone.slice(1) : siteInfo.siteInfo.phone);
 const cartInfo = useCartInfo();
 const siteInfo = useSiteInfo();
-
+const isMobile = computed(() => window.innerWidth < 550);
 const siteLogo = computed(() => siteInfo.siteInfo.logo ? import.meta.env.VITE_MAIN_SITE + siteInfo.siteInfo.logo : null);
 const showCart = computed(() => cartInfo.cart.length > 0);
 const infoIsEmpty = computed(() => !siteInfo?.siteInfo?.opening_hours && !siteInfo?.siteInfo?.city);
