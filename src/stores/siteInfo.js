@@ -17,6 +17,7 @@ export const useSiteInfo = defineStore('siteInfo', {
 
             this.yookassaConnected = response.data.yookassaConnected
             this.siteInfo.tariff_expired = response.data.tariff_expired
+            alert('test')
             return this.siteInfo
         }
     }
