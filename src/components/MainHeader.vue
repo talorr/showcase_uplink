@@ -74,12 +74,14 @@
 import { computed } from 'vue';
 import {useCartInfo} from "@/stores/cartInfo";
 import {useSiteInfo} from "@/stores/siteInfo";
+import { getImageOptimized } from '@/composables/utils';
+
 const phone = computed(() => siteInfo.siteInfo.phone.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, '+7 ($2) $3-$4-$5'));
 const phoneToCall = computed(() => siteInfo.siteInfo.phone[0] == 8 ? '+7' + siteInfo.siteInfo.phone.slice(1) : siteInfo.siteInfo.phone);
 const cartInfo = useCartInfo();
 const siteInfo = useSiteInfo();
 const isMobile = computed(() => window.innerWidth < 550);
-const siteLogo = computed(() => siteInfo.siteInfo.logo ? import.meta.env.VITE_MAIN_SITE + siteInfo.siteInfo.logo : null);
+const siteLogo = computed(() => siteInfo.siteInfo.logo ? getImageOptimized(siteInfo.siteInfo.logo) : null);
 const showCart = computed(() => cartInfo.cart.length > 0);
 const infoIsEmpty = computed(() => !siteInfo?.siteInfo?.opening_hours && !siteInfo?.siteInfo?.city);
 const sklonenie = (number, txt) => {
