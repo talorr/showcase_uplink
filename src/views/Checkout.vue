@@ -386,7 +386,23 @@ const requestPayment = async (orderId) => {
 
   try {
     const payload = {
-      orderId: orderId,
+      orderId: orderId,  
+      "receipt": {
+        "customer": {
+          "email": order.user.email
+        },
+        "items": order.products.map((product) => {
+          return {
+            "description": product.name,
+            "quantity": product.quantity,
+            "amount": {
+              "value": product.price,
+              "currency": "RUB"
+            },
+            "vat_code": 1
+          }
+        })
+      }
     };
     const response = await apiClient.post(import.meta.env.VITE_API_BASE_URL + "/create-order-payment", payload);
     if (response.data.payment.confirmation.confirmation_url) {
