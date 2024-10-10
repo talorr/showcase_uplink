@@ -399,7 +399,9 @@ const requestPayment = async (orderId) => {
               "value": product.price,
               "currency": "RUB"
             },
-            "vat_code": 1
+            "vat_code": 1,
+            "payment_mode": "full_payment",
+            "payment_subject": "commodity"
           }
         })
       }
